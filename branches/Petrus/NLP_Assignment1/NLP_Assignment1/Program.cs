@@ -17,6 +17,7 @@ namespace NLP_Assignment1
 	{
 		static void Main(string[] args)
 		{
+			// TODO_EXTRA: fixa verbosity och mode om det finns tid
 			LanguageModel lm = new LanguageModel(Verbosity.NORMAL, Mode.NORMAL);
 			lm.Run();
 		}

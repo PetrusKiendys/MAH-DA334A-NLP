@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Numerics;
 
 namespace NLP_Assignment1
 {
@@ -96,13 +97,14 @@ namespace NLP_Assignment1
 			// --variables for counters and results of processing--
 			//      --results--
 			int n = 0;
-			double sum = 0;
+			double sum = 0, sum_e = 0;
 
-			//      --counters--
+			//      --counters & dev variables--
 			int counterEnd = 0;
 			int counter = 0;
+			double d = 0, dLog = 0;
 
-			// --calculation of N--
+			// --STEP: calculation of N--
 			foreach (KeyValuePair<string, int> entry in wordListUnigrams)
 			{
 				n += entry.Value;
@@ -114,21 +116,44 @@ namespace NLP_Assignment1
 			// EXTRA_INFO: by calculating word tokens divided by word types we know that every word appears 5.8 times on average
 			Console.WriteLine("value of n: " + n);
 
-			// --summation of bigram probabilities in log space
+			// --STEP: summation of bigram probabilities (in log space)
 			// NOTE: might want to use double datatype everywhere for probabilities (although this will require more memory/processing)
 			foreach (KeyValuePair<string, float> entry in probListBigrams)
 			{
-				counter++;
+				// DEV_CODE: variables for printing out factors and their values (also print the natural logarithm of the factors)
+				//counter++;
+				//d = entry.Value;
+				//dLog = Math.Log(d);
 
 				sum += Math.Log((double)entry.Value);
 
+				// DEV_CODE: prints out factors and log_e factors
 				//Console.WriteLine("sum is: " + sum + " after " + counter + " iterations.");
 				//Console.WriteLine("d is: " + d + ", dLog is: " + dLog + "\n");
 			}
 
 			Console.WriteLine("total sum: " + sum);
 
-			// BOOKMARK: continue with the rest of calc for perplexity!
+			// --STEP: raising e to the power of sum (getting out of log space)--
+
+			// FIX/BOOKMARK: get out of log space without underflow!
+
+
+
+			//   Console.WriteLine("Raised sum " + sum_e);
+			BigRational r = new BigRational(1.25);
+
+			//  r = Math.Pow(Math.E, sum);
+			//r = 1.25;
+			Console.WriteLine("Status: " + r);
+			string output = BigRationalExtensions.ToDecimalString(r, 3);
+
+			Console.WriteLine("Status efter: " + output);
+
+
+			// --STEP: inverting sum--
+
+			// --STEP: normalizing sum by the root of N--
 
 
 

@@ -21,7 +21,7 @@ namespace NLP_Assignment1
 			FileStream file = new FileStream("../../res/talbanken-dep-train.conll", FileMode.Open, FileAccess.Read);
 			StreamReader reader = new StreamReader(file);
 			string content = reader.ReadToEnd().ToLower();  // Word and bigram counts are not case sensitive
-            file.Close();
+			file.Close();
 			string[] contentArray = content.Split('\n');
 
 			for (int i = 0; i < contentArray.Length; i++)
@@ -31,15 +31,15 @@ namespace NLP_Assignment1
 
 				string[] tokens = contentArray[i].Split('\t');
 
-                //string idval = tokens.ElementAt(0);
+				//string idval = tokens.ElementAt(0);
 
 				string[] wordSplit = tokens.ElementAt(1).Split('_');
-                string word = wordSplit.ElementAt(0);
+				string word = wordSplit.ElementAt(0);
 
 				word = word.Trim();
 
 				wordList.Add(word);
-                //intList.Add(idval);
+				//intList.Add(idval);
 			}
 		}
 

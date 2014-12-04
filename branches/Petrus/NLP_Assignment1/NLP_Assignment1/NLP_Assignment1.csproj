@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Enums.cs" />
     <Compile Include="DataManager.cs" />
     <Compile Include="LanguageModel.cs" />
     <Compile Include="Processor.cs" />

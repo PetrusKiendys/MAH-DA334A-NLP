@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Numerics;
+using Numerics;
 
 namespace NLP_Assignment1
 {
 	class Processor
 	{
-
+        
 		internal Dictionary<string, int> CountNGrams(List<string> wordList, NGram inNGram)
 		{
 			Dictionary<string, int> res = new Dictionary<string, int>();
@@ -45,10 +47,10 @@ namespace NLP_Assignment1
 								res.Add(bigram, 1);
 						}
 					}
-
+                    
 					return res;
 			}
-
+            
 			throw new ArgumentException("Illegal NGram enumerator was passed");
 
 		}
@@ -90,19 +92,18 @@ namespace NLP_Assignment1
 
 			return res;
 		}
-
 		internal double calcPerplex(Dictionary<string, int> wordListUnigrams, Dictionary<string, float> probListBigrams)
 		{
 			// --variables for counters and results of processing--
 			//      --results--
 			int n = 0;
-			double sum = 0;
+            double sum = 0, sum_e = 0;
 
 			//      --counters--
 			int counterEnd = 0;
 			int counter = 0;
 
-			// --calculation of N--
+			// --STEP: calculation of N--
 			foreach (KeyValuePair<string, int> entry in wordListUnigrams)
 			{
 				n += entry.Value;
@@ -114,21 +115,41 @@ namespace NLP_Assignment1
 			// EXTRA_INFO: by calculating word tokens divided by word types we know that every word appears 5.8 times on average
 			Console.WriteLine("value of n: " + n);
 
-			// --summation of bigram probabilities in log space
+            double d, dLog;
+			// --STEP: summation of bigram probabilities in log space--
 			// NOTE: might want to use double datatype everywhere for probabilities (although this will require more memory/processing)
 			foreach (KeyValuePair<string, float> entry in probListBigrams)
 			{
 				counter++;
 
+              //  d = entry.Value;
+           //     dLog = Math.Log(d);
+            //    sum += dLog;
 				sum += Math.Log((double)entry.Value);
 
-				//Console.WriteLine("sum is: " + sum + " after " + counter + " iterations.");
-				//Console.WriteLine("d is: " + d + ", dLog is: " + dLog + "\n");
+		//		Console.WriteLine("sum is: " + sum + " after " + counter + " iterations.");
+		///		Console.WriteLine("d is: " + d + ", dLog is: " + dLog + "\n");
 			}
 
 			Console.WriteLine("total sum: " + sum);
 
-			// BOOKMARK: continue with the rest of calc for perplexity!
+            // --STEP: raising e to the power of sum (getting out of log space)--
+    
+         //   Console.WriteLine("Raised sum " + sum_e);
+
+
+            BigRational r = new BigRational(1.25);
+            
+          //  r = Math.Pow(Math.E, sum);
+            //r = 1.25;
+            Console.WriteLine("Status: " + r);
+            string output = BigRationalExtensions.ToDecimalString(r, 3);
+
+            Console.WriteLine("Status efter: " + output);
+
+            // --STEP: inverting sum--
+
+            // --STEP: normalizing sum by the root of N--
 
 
 

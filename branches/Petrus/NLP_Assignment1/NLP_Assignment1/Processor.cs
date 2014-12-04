@@ -8,15 +8,14 @@ namespace NLP_Assignment1
 	class Processor
 	{
 
-		public Dictionary<string, int> CountNGrams(List<string> wordList, int inNGram)
-		// return: Dictionary<string, int> wordListUnigrams, Dictionary<string, int> wordListBigrams
+		internal Dictionary<string, int> CountNGrams(List<string> wordList, NGram inNGram)
 		{
+			Dictionary<string, int> res = new Dictionary<string, int>();
+
 			switch (inNGram)
 			{
 				// count unigrams
-				case (int)NGram.UNIGRAM:
-					Dictionary<string, int> res = new Dictionary<string,int>();
-
+				case NGram.UNIGRAM:
 					for (int i = 0; i < wordList.Count; i++)
 					{
 						string word = wordList[i];
@@ -28,45 +27,36 @@ namespace NLP_Assignment1
 					}
 
 					return res;
-			}
-				//BOOKMARK: fix the case for bigrams, then test verbosity
-			for (int i = 0; i < wordList.Count; i++)
-			{
-				string word = wordList[i];
-
-				// count unigrams
-				if (wordListUnigrams.ContainsKey(word))
-				{
-					wordListUnigrams[word] = wordListUnigrams[word] + 1;
-				}
-				else
-				{
-					wordListUnigrams.Add(word, 1);
-				}
 
 				// count bigrams
-				if (wordList.Count > i + 1)
-				{
-					string word2 = wordList[i + 1];
-
-					string bigram = word + " " + word2;
-
-					if (wordListBigrams.ContainsKey(bigram))
+				case NGram.BIGRAM:
+					for (int i = 0; i < wordList.Count; i++)
 					{
-						wordListBigrams[bigram] = wordListBigrams[bigram] + 1;
+						string word1 = wordList[i];
+
+						if (wordList.Count > i + 1)
+						{
+							string word2 = wordList[i + 1];
+							string bigram = word1 + " " + word2;
+
+							if (res.ContainsKey(bigram))
+								res[bigram] = res[bigram] + 1;
+							else
+								res.Add(bigram, 1);
+						}
 					}
-					else
-					{
-						wordListBigrams.Add(bigram, 1);
-					}
-				}
+
+					return res;
 			}
+
+			throw new ArgumentException("Illegal NGram enumerator was passed");
 
 		}
 
-		public void CalcProb(	Dictionary<string, int> wordListBigrams, Dictionary<string, int> wordListUnigrams,
-								Dictionary<string, float> probListBigrams)
+		internal Dictionary<string, float> CalcProb	(Dictionary<string, int> wordListBigrams, Dictionary<string, int> wordListUnigrams)
 		{
+			Dictionary<string, float> res = new Dictionary<string,float>();
+
 			// this part calculates bigram probabilities (the prob of a unigram given a different unigram)
 			foreach (KeyValuePair<string, int> entry in wordListBigrams)
 			{
@@ -81,14 +71,15 @@ namespace NLP_Assignment1
 					int unigramcount = wordListUnigrams[unigram];
 
 
-					float probability = (float)bigramcount / (float)unigramcount;
+					float prob = (float)bigramcount / (float)unigramcount;
 
-					probListBigrams[entry.Key] = probability;
+					res[entry.Key] = prob;
 
+					// FIX: this conditional statement should only be accessible in Mode.TEST
 					if (i == 0)
 					{
 						//Console.WriteLine("\""+bigram +"\""+ " has a probability of " + probability);
-						findLowProb(probability, entry.Key);
+						findLowProb(prob, entry.Key);
 					}
 
 				}
@@ -96,9 +87,11 @@ namespace NLP_Assignment1
 			}
 			//Console.WriteLine("---END---");
 			//Console.WriteLine(unigramCount + " -- " + bigramCount);
+
+			return res;
 		}
 
-		public void calcPerplex(Dictionary<string, int> wordListUnigrams, Dictionary<string, float> probListBigrams)
+		internal double calcPerplex(Dictionary<string, int> wordListUnigrams, Dictionary<string, float> probListBigrams)
 		{
 			// --variables for counters and results of processing--
 			//      --results--
@@ -114,15 +107,15 @@ namespace NLP_Assignment1
 			{
 				n += entry.Value;
 				counterEnd++;
-				// NOTE: test code
+				// DESC: test code
 				//if (counterEnd == 5)
 				//    break;
 			}
-			// NOTE: by calculating word tokens divided by word types we know that every word appears 5.8 times on average
+			// EXTRA_INFO: by calculating word tokens divided by word types we know that every word appears 5.8 times on average
 			Console.WriteLine("value of n: " + n);
 
 			// --summation of bigram probabilities in log space
-			// TODO: might want to use double datatype everywhere for probabilities (although this will require more memory/processing)
+			// NOTE: might want to use double datatype everywhere for probabilities (although this will require more memory/processing)
 			foreach (KeyValuePair<string, float> entry in probListBigrams)
 			{
 				counter++;
@@ -134,6 +127,15 @@ namespace NLP_Assignment1
 			}
 
 			Console.WriteLine("total sum: " + sum);
+
+			// BOOKMARK: continue with the rest of calc for perplexity!
+
+
+
+
+			// FIX: return res once we have calculated perplexity!
+			//return res;
+			return sum;
 
 		}
 

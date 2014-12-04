@@ -9,19 +9,28 @@ namespace NLP_Assignment1
 {
 	class DataManager
 	{
-		internal Dictionary<string, int> wordListUnigrams = new Dictionary<string, int>();
-		internal Dictionary<string, int> wordListBigrams = new Dictionary<string, int>();
-		internal Dictionary<string, float> probListBigrams = new Dictionary<string, float>();
+		// SEM: rename "wordListNgram" variables to "countListNgram(?)"
+		internal Dictionary<string, int> wordListUnigrams;
+		internal Dictionary<string, int> wordListBigrams;
+		internal Dictionary<string, float> probListBigrams;
+		// SCOPE: processing of the ID field of the .conll file might not be necessary for this assignment...
 		//internal List<string> intList = new List<string>();
-		internal List<string> wordList = new List<string>();
+		internal List<string> wordList;
 
 
-		public void LoadFile()
+		internal string LoadFile()
 		{
 			FileStream file = new FileStream("../../res/talbanken-dep-train.conll", FileMode.Open, FileAccess.Read);
 			StreamReader reader = new StreamReader(file);
-			string content = reader.ReadToEnd().ToLower();  // Word and bigram counts are not case sensitive
+			string res = reader.ReadToEnd().ToLower();  // Word and bigram counts are not case sensitive
 			file.Close();
+
+			return res;
+		}
+
+		internal List<string> ExtractWords(string content)
+		{
+			List<string> res = new List<string>();
 			string[] contentArray = content.Split('\n');
 
 			for (int i = 0; i < contentArray.Length; i++)
@@ -31,6 +40,7 @@ namespace NLP_Assignment1
 
 				string[] tokens = contentArray[i].Split('\t');
 
+				// SCOPE: processing of the ID field of the .conll file might not be necessary for this assignment...
 				//string idval = tokens.ElementAt(0);
 
 				string[] wordSplit = tokens.ElementAt(1).Split('_');
@@ -38,12 +48,15 @@ namespace NLP_Assignment1
 
 				word = word.Trim();
 
-				wordList.Add(word);
+				// BOOKMARK: check if res is properly instantiated
+				res.Add(word);
+				// SCOPE: processing of the ID field of the .conll file might not be necessary for this assignment...
 				//intList.Add(idval);
 			}
-		}
-
+			
+			return res;
 		
-
+		}
+	
 	}
 }

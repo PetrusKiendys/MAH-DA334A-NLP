@@ -9,15 +9,12 @@ namespace NLP_Assignment1
 {
 	class LanguageModel
 	{
-		// TODO_LOW: check if "verbosity" is accessible from all classes and apply it for usage
-		// MORE_INFO: http://msdn.microsoft.com/en-us/library/79b3xss3.aspx
 		internal static Verbosity verbosity;
-		internal static Mode mode;
 
-		public LanguageModel(Verbosity verbosity, Mode mode)
+
+		public LanguageModel(Verbosity verbosity)
 		{
 			LanguageModel.verbosity = verbosity;
-			LanguageModel.mode = mode;
 		}
 
 
@@ -26,15 +23,17 @@ namespace NLP_Assignment1
 			DataManager dm = new DataManager();
 			Processor proc = new Processor();
 
-			dm.wordList = dm.ExtractWords(dm.LoadFile());
+			// extracting a List of words from the training set
+			dm.wordList = proc.ExtractWords(dm.LoadFile("../../res/talbanken-dep-train.conll"));
 
-			dm.wordListUnigrams = proc.CountNGrams(dm.wordList, NGram.UNIGRAM);
-			dm.wordListBigrams = proc.CountNGrams(dm.wordList, NGram.BIGRAM);
-			dm.probListBigrams = proc.CalcProb(dm.wordListBigrams, dm.wordListUnigrams);
-			// TODO: store perplex somewhere (in DataManager?)
-			var perplex = proc.calcPerplex(dm.wordListUnigrams, dm.probListBigrams);
+			// counting the number of unigrams, bigrams and calculating the probability of bigrams
+			dm.countUnigrams = proc.CountNGrams(dm.wordList, NGram.UNIGRAM);
+			dm.countBigrams = proc.CountNGrams(dm.wordList, NGram.BIGRAM);
+			dm.probListBigrams = proc.CalcProb(dm.countBigrams, dm.countUnigrams);
 			
-			//proc.calcPerplex(dm.wordListUnigrams,dm.probListBigrams);
+			// calculating perplexity of the training set
+			// TODO: store perplex (in DataManager), use an appropriate datatype
+			var perplex = proc.calcPerplex(dm.countUnigrams, dm.probListBigrams);
 
 			Console.Read();
 		}

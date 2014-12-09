@@ -13,6 +13,11 @@ internal enum Verbosity
 	NORMAL,
 	SILENT
 }
+internal enum Storage
+{
+    FLOAT,
+    BIGRAT
+}
 
 internal enum NGram
 {

@@ -83,10 +83,25 @@ namespace NLP_Assignment1
 			throw new ArgumentException("Illegal NGram enumerator was passed");
 		}
 
-
-		internal Dictionary<string, float> CalcProb	(Dictionary<string, int> countBigrams, Dictionary<string, int> countUnigrams)
+        // TODO_LOW:    fix this method so that it can return both Dictionary<string, float>
+        //              and Dictionary<string, BigRational> through the use of "out" and "ref"
+		internal Dictionary<string, BigRational> CalcProb	(Dictionary<string, int> countBigrams, Dictionary<string, int> countUnigrams, Enum storage)
 		{
-			Dictionary<string, float> res = new Dictionary<string,float>();
+            //if (storage == (Enum)Storage.BIGRAT)
+            //{
+            //    Dictionary<string, BigRational> res_bigrat = new Dictionary<string, BigRational>();
+            //}
+            //if (storage == (Enum)Storage.FLOAT)
+            //{
+            //      ...
+            //}
+
+            Dictionary<string, BigRational> res_bigrat = new Dictionary<string, BigRational>();
+            Dictionary<string, float> res = new Dictionary<string, float>();
+            BigRational prob_bigrat;
+            float prob;
+            Enum storage_casted = (Enum)storage;
+               
 
 			// this part calculates bigram probabilities (the prob of a unigram given a different unigram)
 			foreach (KeyValuePair<string, int> entry in countBigrams)
@@ -102,26 +117,51 @@ namespace NLP_Assignment1
 					string unigram = split[i];
 					int unigramcount = countUnigrams[unigram];
 
-					float prob = (float)bigramcount / (float)unigramcount;
-					res[entry.Key] = prob;
+                    if (storage_casted == (Enum)Storage.FLOAT)
+                    {
+                        prob = (float)bigramcount / (float)unigramcount;
+                        res[entry.Key] = prob;
+                    }
+                        
+                    else if (storage_casted == (Enum)Storage.BIGRAT)
+                    {
+                        prob_bigrat = new BigRational(bigramcount, unigramcount);
+                        res_bigrat[entry.Key] = prob_bigrat;
+
+                        if (LanguageModel.verbosity == Verbosity.DEBUG)
+                        {
+                            Console.WriteLine("for " + entry.Key + ": bigramcount="+bigramcount+", unigramcount="+unigramcount);
+                            Console.WriteLine("prob_bigrat="+prob_bigrat);
+                        }
+                    }
+                    
 
 					if (LanguageModel.verbosity == Verbosity.DEBUG || LanguageModel.verbosity == Verbosity.VERBOSE)
 					{
 						if (i == 0)
 						{
-							if (LanguageModel.verbosity == Verbosity.VERBOSE)
-								Console.WriteLine("\"" + bigram + "\"" + " has a probability of " + prob);
-							findLowProb(entry.Key, prob, 1/4000f);
+                            // TODO_LOW: assign prob properly
+                            //if (LanguageModel.verbosity == Verbosity.VERBOSE)
+                            //    Console.WriteLine("\"" + bigram + "\"" + " has a probability of " + prob);
+                            //findLowProb(entry.Key, prob, 1/4000f);
 						}
 					}
 				}
 			}
 
-			return res;
+            if (storage == (Enum)Storage.FLOAT)
+                throw new NotImplementedException("fix return types of this functioN!");
+            // TODO_LOW: fix this so that you can return a float, this error occurs because this method only returns one datatype (BigRational for now...)
+            // return res;
+            else if (storage == (Enum)Storage.BIGRAT)
+                return res_bigrat;
+
+            return null;
 		}
 
-
-		internal double calcPerplex(Dictionary<string, int> countUnigrams, Dictionary<string, float> probListBigrams)
+        // TODO_LOW:    fix this so that you can send both Dictionary<string, float> and Dictionary<string, BigRational>, using "optional"
+        //              so that we're able to send either "probListBigrams_bigrat" or "probListBigrams"
+		internal double calcPerplex(Dictionary<string, int> countUnigrams, Dictionary<string, BigRational> probListBigrams, Enum storage)
 		{
 			// --variables for counters and results of processing--
 			//      --results--
@@ -145,7 +185,11 @@ namespace NLP_Assignment1
 
 			// --STEP: summation of bigram probabilities (in log space)
 			// NOTE: might want to use double datatype everywhere for probabilities (although this will require more memory/processing)
-			foreach (KeyValuePair<string, float> entry in probListBigrams)
+            
+            // TODO_LOW: make a conditional that runs either:
+            //      foreach (KeyValuePair<string, float> entry in probListBigrams)  or
+            //      foreach (KeyValuePair<string, BigRational> entry in probListBigrams)
+			foreach (KeyValuePair<string, BigRational> entry in probListBigrams)
 			{
 				// DEV_CODE: variables for printing out factors and their values (also print the natural logarithm of the factors)
 				//counter++;
@@ -183,15 +227,18 @@ namespace NLP_Assignment1
 
 			//decimal sum_deci = (decimal)sum;
 			//BigRational u = new BigRational(sum_deci);
-			double res_dbl = Math.Pow(Math.E, sum);
+			
+            double res_dbl = Math.Pow(Math.E, sum);
 			decimal res_deci = (decimal)res_dbl;
 			BigRational res_bigrat = new BigRational(res_deci);
 
+            BigRational bigrat = new BigRational((decimal)Math.Pow(Math.E, sum));
+
 			//  r = Math.Pow(Math.E, sum);
 			//r = 1.25;
-			Console.WriteLine("BigRational: " + res_deci);
+			Console.WriteLine("BigRational: " + bigrat);
 			// NOTE: computationally viable to set the precision between 10k and 40k
-			string output = BigRationalExtensions.ToDecimalString(res_deci, 1000);
+			string output = BigRationalExtensions.ToDecimalString(bigrat, 1000);
 
 			Console.WriteLine("BigRational (toDecimalString): " + output);
 

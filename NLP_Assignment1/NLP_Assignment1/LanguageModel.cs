@@ -29,11 +29,14 @@ namespace NLP_Assignment1
 			// counting the number of unigrams, bigrams and calculating the probability of bigrams
 			dm.countUnigrams = proc.CountNGrams(dm.wordList, NGram.UNIGRAM);
 			dm.countBigrams = proc.CountNGrams(dm.wordList, NGram.BIGRAM);
-			dm.probListBigrams = proc.CalcProb(dm.countBigrams, dm.countUnigrams);
+			//dm.probListBigrams = proc.CalcProb(dm.countBigrams, dm.countUnigrams, Storage.FLOAT);
+            dm.probListBigrams_bigrat = proc.CalcProb(dm.countBigrams, dm.countUnigrams, Storage.BIGRAT);
+
+            Console.WriteLine("-");
 			
 			// calculating perplexity of the training set
 			// TODO: store perplex (in DataManager), use an appropriate datatype
-			var perplex = proc.calcPerplex(dm.countUnigrams, dm.probListBigrams);
+			var perplex = proc.calcPerplex(dm.countUnigrams, dm.probListBigrams_bigrat, Storage.BIGRAT);
 
 			Console.Read();
 		}

@@ -11,7 +11,7 @@ namespace NLP_Assignment1
 	{
 		static void Main(string[] args)
 		{
-			LanguageModel lm = new LanguageModel(Verbosity.DEBUG);
+			LanguageModel lm = new LanguageModel(Verbosity.NORMAL);
 			lm.Run();
 		}
 	}

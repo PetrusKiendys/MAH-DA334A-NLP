@@ -19,7 +19,7 @@ namespace NLP_Assignment1
 
 
 		public void Run()
-		{
+		{	
 			DataManager dm = new DataManager();
 			Processor proc = new Processor();
 
@@ -30,13 +30,11 @@ namespace NLP_Assignment1
 			dm.countUnigrams = proc.CountNGrams(dm.wordList, NGram.UNIGRAM);
 			dm.countBigrams = proc.CountNGrams(dm.wordList, NGram.BIGRAM);
 			//dm.probListBigrams = proc.CalcProb(dm.countBigrams, dm.countUnigrams, Storage.FLOAT);
-            dm.probListBigrams_bigrat = proc.CalcProb(dm.countBigrams, dm.countUnigrams, Storage.BIGRAT);
-
-            Console.WriteLine("-");
+			dm.probListBigrams_bigrat = proc.CalcProb(dm.countBigrams, dm.countUnigrams, Storage.BIGRAT);
 			
 			// calculating perplexity of the training set
 			// TODO: store perplex (in DataManager), use an appropriate datatype
-			var perplex = proc.calcPerplex(dm.countUnigrams, dm.probListBigrams_bigrat, Storage.BIGRAT);
+			var perplex = proc.CalcPerplex(dm.countUnigrams, dm.probListBigrams_bigrat, Storage.BIGRAT);
 
 			Console.Read();
 		}

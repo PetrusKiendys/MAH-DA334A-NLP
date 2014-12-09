@@ -1,0 +1,4 @@
+C:\Users\ryu_eMach_E732Z\Documents\Visual Studio 2010\Projects\Project_NLP\branches\Petrus\NLP_Assignment1\NLP_Assignment1\bin\Debug\NLP_Assignment1.exe
+C:\Users\ryu_eMach_E732Z\Documents\Visual Studio 2010\Projects\Project_NLP\branches\Petrus\NLP_Assignment1\NLP_Assignment1\bin\Debug\NLP_Assignment1.pdb
+C:\Users\ryu_eMach_E732Z\Documents\Visual Studio 2010\Projects\Project_NLP\branches\Petrus\NLP_Assignment1\NLP_Assignment1\obj\x86\Debug\NLP_Assignment1.exe
+C:\Users\ryu_eMach_E732Z\Documents\Visual Studio 2010\Projects\Project_NLP\branches\Petrus\NLP_Assignment1\NLP_Assignment1\obj\x86\Debug\NLP_Assignment1.pdb

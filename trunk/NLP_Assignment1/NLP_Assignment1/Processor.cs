@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Numerics;
+using Numerics;
 
 namespace NLP_Assignment1
 {
@@ -154,32 +155,49 @@ namespace NLP_Assignment1
 				sum += Math.Log((double)entry.Value);
 
 				// DEV_CODE: prints out factors and log_e factors
-				//Console.WriteLine("sum is: " + sum + " after " + counter + " iterations.");
-				//Console.WriteLine("d is: " + d + ", dLog is: " + dLog + "\n");
+				if (LanguageModel.verbosity == Verbosity.TEST)
+				{
+					Console.WriteLine("sum is: " + sum + " after " + counter + " iterations.");
+					Console.WriteLine("d is: " + d + ", dLog is: " + dLog + "\n");
+				}
+				
 			}
 
 			// TODO_LOW: put this into Verbosity.DEBUG later
-			Console.WriteLine("total sum: " + sum);
+			Console.WriteLine("sum printed as double: " + sum);
 
 			// --STEP: raising e to the power of sum (getting out of log space)--
 
-			// BOOKMARK/FIX: get out of log space without underflow!
-
-
 
 			//   Console.WriteLine("Raised sum " + sum_e);
-			// UNCOMMENT: BigRational r = new BigRational(1.25);
+
+			//	NOTE: 18446744073709551615 is the max value that BigInteger can hold (this equals to (2^64)-1)
+			//BigRational r = new BigRational(new BigInteger(1), new BigInteger(18446744073709551615));
+			//BigRational s = new BigRational(new BigInteger(1), new BigInteger(100000000000000000));
+			//BigRational t = r+s;
+
+			//float flt = 0.5f;
+			//double dbl = 0.5;
+			//decimal deci = 0.5m;
+			//BigRational u = new BigRational(deci);
+
+			//decimal sum_deci = (decimal)sum;
+			//BigRational u = new BigRational(sum_deci);
+			double res_dbl = Math.Pow(Math.E, sum);
+			decimal res_deci = (decimal)res_dbl;
+			BigRational res_bigrat = new BigRational(res_deci);
 
 			//  r = Math.Pow(Math.E, sum);
 			//r = 1.25;
-			// UNCOMMENT: Console.WriteLine("Status: " + r);
-			// UNCOMMENT: string output = BigRationalExtensions.ToDecimalString(r, 3);
+			Console.WriteLine("BigRational: " + res_deci);
+			// NOTE: computationally viable to set the precision between 10k and 40k
+			string output = BigRationalExtensions.ToDecimalString(res_deci, 1000);
 
-			// UNCOMMENT: Console.WriteLine("Status efter: " + output);
+			Console.WriteLine("BigRational (toDecimalString): " + output);
 
 
 			// --STEP: inverting sum--
-
+			
 			// --STEP: normalizing sum by the root of N--
 
 

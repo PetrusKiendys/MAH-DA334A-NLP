@@ -10,10 +10,12 @@ namespace NLP_Assignment1
 	class Processor
 	{
 
-		internal List<string> ExtractWords(string content)
+		internal List<string> ExtractWords(string content, Enum unknownhandler, int unknownhandler_modifier)
 		{
 			List<string> res = new List<string>();
 			string[] contentArray = content.Split('\n');
+            // FIX: place random here and set seed from loop
+            // TODO_HIGH: make a separate counter that keeps track of the row of the .conll file that we're reading in
 
 			for (int i = 0; i < contentArray.Length; i++)
 			{
@@ -36,27 +38,53 @@ namespace NLP_Assignment1
                 {
                     // special case: assign start-marker #s at the beginning of the set
                     if (i == 0)
-                    {
                         res.Add("#s");
+
+                    // TODO_LOW: fix this if there's time.. focus on fixing UnknownHandler.RANDOMIZE
+                    if (unknownhandler.Equals(UnknownHandler.EVERY_NTH_ROW))
+                    {
+                        if (i % unknownhandler_modifier == 0 && i != 0)
+                        {
+                            //Console.WriteLine("i: " + i + ", unknownhandler_modifier: "+unknownhandler_modifier+", operation: "+(i%unknownhandler_modifier));
+                            res.Add("#unk");
+                        }
+                        else
+                        {
+                            string[] tokens = contentArray[i].Split('\t');
+
+                            //string id_field = tokens.ElementAt(0);          // NOTE: this string will probably not be used, can be removed later..
+                            string word_field = tokens.ElementAt(1);
+
+                            // NOTE: just in case..
+                            word_field = word_field.Trim();
+                            res.Add(word_field);
+                        }   
                     }
 
-                    string[] tokens = contentArray[i].Split('\t');
+                    // TODO_HIGH: fix UnknownHandler.RANDOMIZE
+                    else if (unknownhandler.Equals(UnknownHandler.RANDOMIZE))
+                    {
+                        Random rand = new Random(i);
+                        int result = rand.Next(0,101);
 
-                    string id_field = tokens.ElementAt(0);
-                    string word_field = tokens.ElementAt(1);
+                        //Console.WriteLine(result);
 
-                    //word = word.Trim();
-                    //res.Add(word);
+                        if (unknownhandler_modifier < result)
+                            res.Add("#unk");
+                        else
+                        {
+                            string[] tokens = contentArray[i].Split('\t');
 
-                    // NOTE: just in case..
-                    word_field = word_field.Trim();
-                    res.Add(word_field);
+                            //string id_field = tokens.ElementAt(0);          // NOTE: this string will probably not be used, can be removed later..
+                            string word_field = tokens.ElementAt(1);
 
-                    // LEGACY: processing of the ID field of the .conll file might not be necessary for this assignment...
-                    //intList.Add(idval);	// NOTE: this statement was moved from DataManager
+                            // NOTE: just in case..
+                            word_field = word_field.Trim();
+                            res.Add(word_field);
+                        }
+                            
+                    }
                 }
-				
-				
 			}
 
 			return res;
@@ -109,7 +137,10 @@ namespace NLP_Assignment1
 
 		// TODO_LOW:    fix this method so that it can return both Dictionary<string, float>
 		//              and Dictionary<string, BigRational> through the use of "out" and "ref"
-        // TODO_LOW: fix support for Laplace add-one smoothing when using float type?
+        // TODO_LOW:    fix support for Laplace add-one smoothing when using float type?
+        // DEV_NOTE:    smoothing in this function is not done "on-the-fly" and should only be used for debug reasons
+        // ASSIGNMENT:  we can see that when we apply smoothing, the probabilities become closer for the same entries
+        //                  f.e. the first bigram prob entries 1/1 and 1/7 are smoothed into 1/6457 and 1/6454
 		internal Dictionary<string, BigRational> CalcProb	(Dictionary<string, int> countBigrams, Dictionary<string, int> countUnigrams, Enum storage, Enum smoothing)
 		{
 
@@ -165,7 +196,7 @@ namespace NLP_Assignment1
 							if (bigramcount > 1)
 							{
 								Console.WriteLine("\"" + entry.Key + "\": bigramcount=" + bigramcount + ", unigramcount=" + unigramcount);
-								Console.WriteLine("prob_bigrat                    =" + prob_bigrat);
+								Console.WriteLine("prob_bigrat=" + prob_bigrat);
 							}
 						}
 					}
@@ -197,7 +228,7 @@ namespace NLP_Assignment1
 
 		// TODO_LOW:    fix this so that you can send both Dictionary<string, float> and Dictionary<string, BigRational>, using "optional"
 		//              so that we're able to send either "probListBigrams_bigrat" or "probListBigrams"
-		internal decimal CalcPerplex(Dictionary<string, int> countUnigrams, Dictionary<string, BigRational> probListBigrams, Enum storage)
+        internal decimal CalcPerplex(Dictionary<string, int> countUnigrams, Dictionary<string, BigRational> probListBigrams, Enum storage, Enum smoothing)
 		{
 			// --variables for counters and results of processing--
 			//      --results--
@@ -205,6 +236,7 @@ namespace NLP_Assignment1
             // CLEANUP: sum_e is no longer in use, can be safely deleted?
 			double sum = 0, sum_e = 0;
             decimal sum_e_hardcoded = 0;
+            double bigramprob = 1.0;
 
 			//      --counters & dev variables--
 			int counter = 0;
@@ -233,7 +265,45 @@ namespace NLP_Assignment1
 			foreach (KeyValuePair<string, BigRational> entry in probListBigrams)
 			{
 				counter++;
-				sum += Math.Log((double)entry.Value);
+
+                if (smoothing.Equals(Smoothing.ADDONE))
+                {
+                        int numerator, denominator;
+                        string valuex = entry.Value.ToString();
+                        string[] splitnumber = valuex.Split('/');
+
+                        numerator = Int32.Parse(splitnumber[0]) + 1;
+                        denominator = Int32.Parse(splitnumber[1]) + countUnigrams.Count;
+
+                    BigRational bigrat_smoothed = new BigRational(numerator, denominator);
+                    bigramprob = (double)bigrat_smoothed;
+
+                    if (LanguageModel.verbosity == Verbosity.TEST_CALCPERPLEX_PRINT_SMOOTHING_VALUES)
+                    {
+                        if (counter == 1)
+                            Console.WriteLine("-- add-one smoothing --");
+                        if (counter < 10)
+                            Console.WriteLine("bigramprob in BigRat: " + bigrat_smoothed + ", bigramprob in double: " + bigramprob);
+                    }
+                }
+
+                else if (smoothing.Equals(Smoothing.NONE))
+                {
+                    bigramprob = (double)entry.Value;
+                    
+                    if (LanguageModel.verbosity == Verbosity.TEST_CALCPERPLEX_PRINT_SMOOTHING_VALUES)
+                    {
+                        if (counter == 1)
+                            Console.WriteLine("-- no smoothing --");
+                        if (counter < 10)
+                            Console.WriteLine("bigramprob in BigRat: " + entry.Value + ", bigramprob in double: " + bigramprob);
+                    }
+                        
+                }
+
+                
+                sum += Math.Log(bigramprob);
+                
 
 				// DEBUG_CODE: prints out factors and log_e factors
 				if (LanguageModel.verbosity == Verbosity.TEST_CALCPERPLEX_PRINT_SUM_AND_TERMS_IN_LOGSPACE)
@@ -306,7 +376,8 @@ namespace NLP_Assignment1
 			string output = BigRationalExtensions.ToDecimalString(bigrat, 1000);
 			Console.WriteLine("BigRational (toDecimalString): " + output);
 
-            // FIX:     because we calculated perplex after implementing start & end-markers, we need to recalculate this with the new values
+            // FIX:     because we calculated perplex after implementing start & end-markers, we need to recalculate this with new values
+
             // NOTE:    the description below describes how to calculate perplexity without start & end-markers and without implementing management of unknown words
 			// TODO:	because C# has difficulty handling very small numbers, we will calculate "sum_e"
 			//			by inputting the "sum" into a computational engine (such as Wolfram Alpha) and extracting
@@ -317,6 +388,9 @@ namespace NLP_Assignment1
             //              284241984176186094758979992376887731735906925163945239440931530517915804023855480363215
             //              7957730260930179126966852901223646001084199656991457820174231... × 10^-75800
             // NOTE:        C# has difficulty handling this number, we will invert it to continue with the perplexity calculation
+            // NOTE:        alternate sums in logspace:
+            //                  bigram probs for start & end-markers, no smoothing: http://www.wolframalpha.com/input/?i=e%5E%28-175333.412822372%29
+            //                  bigram probs for start & end-markers, add-one smoothing: http://www.wolframalpha.com/input/?i=e%5E%28-440862.003667614%29
 
 			// --STEP: inverting sum--
             // LINK:    http://www.wolframalpha.com/input/?i=1%2Fe%5E%28-174535.446785493%29
@@ -334,9 +408,15 @@ namespace NLP_Assignment1
             //          5594929572236758991481328872819494773771651499871083331169747341427166337549459064678348218047152739124260
             //          7546365242329060695883293875644...
             //          Rounding down we will store this number with a precision of 6 decimals.
-            decimal perplex = 9.948541m;
 
-			return perplex;
+            decimal perplex_nomarkers_nosmoothing = 9.948541m;      // perplex for no bigram probabilities for start & end markers, no smoothing
+            decimal perplex_markers_nosmoothing;                    // perplex for bigram probabilities for start & end markers, no smoothing
+            decimal perplex_markers_smoothing;                      // perplex for bigram probabilities for start & end markers, add-one smoothing
+
+            Console.WriteLine("static calculation of perplexity: " + perplex_nomarkers_nosmoothing);
+
+
+			return perplex_nomarkers_nosmoothing;
 
 		}
 

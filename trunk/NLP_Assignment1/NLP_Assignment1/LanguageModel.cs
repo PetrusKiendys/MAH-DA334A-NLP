@@ -25,7 +25,7 @@ namespace NLP_Assignment1
 
 			// extracting a List of words from the training set
             // TODO_HIGH: add an UnknownManager (from Enum) which specifies a rule with which we generate a subset of unk# markers/words when processing the wordList
-			dm.wordList = proc.ExtractWords(dm.LoadFile("../../res/talbanken-dep-train.conll"), UnknownHandler.EVERY_NTH_ROW, 10);
+			dm.wordList = proc.ExtractWords(dm.LoadFile("../../res/talbanken-dep-train.conll"), UnknownHandler.RANDOMIZE, 50);
             //dm.wordList = proc.ExtractWords(dm.LoadFile("../../res/talbanken-dep-test.conll"), UnknownHandler.NONE, 10);
 
 			// counting the number of unigrams, bigrams and calculating the probability of bigrams
@@ -40,7 +40,13 @@ namespace NLP_Assignment1
 			
 			// calculating perplexity of the training set
 			// TODO: store perplex (in DataManager), use an appropriate datatype
-            dm.perplex = proc.CalcPerplex(dm.countUnigrams, dm.probListBigrams_bigrat, Storage.BIGRAT, Smoothing.NONE);
+            dm.perplex = proc.CalcPerplex(dm.countUnigrams, dm.probListBigrams_bigrat, Storage.BIGRAT, Smoothing.ADDONE);
+
+            dm.wordListTestSet = proc.ExtractWords(dm.LoadFile("../../res/talbanken-dep-test.conll"), UnknownHandler.NONE, 0);
+            dm.countUnigramsTestSet = proc.CountNGrams(dm.wordListTestSet, NGram.UNIGRAM);
+
+            dm.wordDiffList = proc.ExtractDiffWords(dm.countUnigrams, dm.countUnigramsTestSet);
+            dm.SaveFile("../../out/output.txt", dm.wordDiffList);
 
 			Console.Read();
 		}

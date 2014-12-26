@@ -14,11 +14,19 @@ namespace NLP_Assignment1
 		{
 			List<string> res = new List<string>();
 			string[] contentArray = content.Split('\n');
-            // FIX: place random here and set seed from loop
-            // TODO_HIGH: make a separate counter that keeps track of the row of the .conll file that we're reading in
+            Random rand;
 
 			for (int i = 0; i < contentArray.Length; i++)
 			{
+                string word_field = "";
+
+                if (contentArray[i] != "")
+                {
+                    string[] tokens = contentArray[i].Split('\t');
+                    word_field = tokens.ElementAt(1).Trim();
+                }
+
+
                 // special case: assign end-marker #e at the end of the set, break out of the loop after doing this (no need to process trailing empty lines)
                 if (i == contentArray.Length-2)
                 {
@@ -43,20 +51,13 @@ namespace NLP_Assignment1
                     // TODO_LOW: fix this if there's time.. focus on fixing UnknownHandler.RANDOMIZE
                     if (unknownhandler.Equals(UnknownHandler.EVERY_NTH_ROW))
                     {
-                        if (i % unknownhandler_modifier == 0 && i != 0)
+                        if ((i+1) % unknownhandler_modifier == 0 && i != 0)
                         {
                             //Console.WriteLine("i: " + i + ", unknownhandler_modifier: "+unknownhandler_modifier+", operation: "+(i%unknownhandler_modifier));
                             res.Add("#unk");
                         }
                         else
                         {
-                            string[] tokens = contentArray[i].Split('\t');
-
-                            //string id_field = tokens.ElementAt(0);          // NOTE: this string will probably not be used, can be removed later..
-                            string word_field = tokens.ElementAt(1);
-
-                            // NOTE: just in case..
-                            word_field = word_field.Trim();
                             res.Add(word_field);
                         }   
                     }
@@ -64,31 +65,58 @@ namespace NLP_Assignment1
                     // TODO_HIGH: fix UnknownHandler.RANDOMIZE
                     else if (unknownhandler.Equals(UnknownHandler.RANDOMIZE))
                     {
-                        Random rand = new Random(i);
-                        int result = rand.Next(0,101);
+                        rand = new Random(i);
+                        int result = rand.Next(0,100);
 
                         //Console.WriteLine(result);
 
-                        if (unknownhandler_modifier < result)
-                            res.Add("#unk");
-                        else
+                        if (unknownhandler_modifier <= result)
                         {
-                            string[] tokens = contentArray[i].Split('\t');
-
-                            //string id_field = tokens.ElementAt(0);          // NOTE: this string will probably not be used, can be removed later..
-                            string word_field = tokens.ElementAt(1);
-
-                            // NOTE: just in case..
-                            word_field = word_field.Trim();
+                            //Console.WriteLine("word, "+result);
+                            //Console.WriteLine("word");
                             res.Add(word_field);
                         }
                             
+                        else
+                        {
+                            //Console.WriteLine("unk, "+result);
+                            //Console.WriteLine("unk");
+                            res.Add("#unk");
+                        }
+                            
+                    }
+                    else if (unknownhandler.Equals(UnknownHandler.NONE))
+                    {
+                        res.Add(word_field);
                     }
                 }
 			}
 
 			return res;
 		}
+
+        internal List<string> ExtractDiffWords(Dictionary<string, int> dictionary1, Dictionary<string, int> dictionary2)
+        {
+
+            List<String> res = new List<string>();
+            //List<String> antires = new List<string>();
+
+            foreach (KeyValuePair<string, int> entry in dictionary1)
+            {
+                string word = entry.Key;
+                if (!dictionary2.ContainsKey(word))
+                {
+                    res.Add(word);
+                }
+                // TODO_LOW: assign a verbosity modifier to this code snippet
+                else
+                {
+                    //antires.Add(word);
+                }
+            }
+
+            return res;
+        }
 
 
 		internal Dictionary<string, int> CountNGrams(List<string> wordList, NGram inNGram)
@@ -433,5 +461,6 @@ namespace NLP_Assignment1
 				Console.WriteLine("\"" + bigram + "\" has a low prob of: " + prob);
 			}
 		}
-	}
+
+    }
 }

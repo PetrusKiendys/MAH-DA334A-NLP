@@ -1,0 +1,16 @@
+2.a) Our implementation is as follows:
+	- Enums.cs		Contains constants used by the application
+	- Program.cs		This is the entry point of the application from where the Language Model is run (with a specified verbosity)
+	- LanguageModel.cs	This is the main program which invokes all of the methods of the application.
+				It is structured in a way which aims to clarify how the control flow of the application is directed.
+	- DataManager.cs	Stores data used by LanguageModel. Functions to read and write from/to a file are also provided here.
+	- Processor.cs		Processes most of the data used by the application, this is where most of the work is done.
+In addition to this, we have used a library called BigRational and BigRationalExtensions to some success.
+
+As far as our results are concerned:
+We are able to add up the logarithmized bigram probabilities into a negative sum -442930,373027132 with start & end-tags and Laplace add-one smoothing.
+When calculating this number without start & end-tags and without smoothing we end up with a sum of -174535,446785493.
+Using an external computational engine (Wolfram Alpha) we calculated the perplexity of the later number to 9,948541.
+
+2.c) We have solved the issue of unseen words by implementing an UnknownHandler which replaces words with the #unk tag.
+It does this by either replacing a specific non-blank row of the training set with #unk or by assigning #unk randomly (where we can specify the probability of it doing so).

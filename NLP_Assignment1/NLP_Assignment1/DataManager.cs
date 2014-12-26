@@ -17,7 +17,7 @@ namespace NLP_Assignment1
 		// LEGACY: processing of the ID field of the .conll file might not be necessary for this assignment...
 		//internal List<string> intList = new List<string>();
 		internal List<string> wordList;
-
+        internal decimal perplex;
 
 		internal string LoadFile(string path)
 		{

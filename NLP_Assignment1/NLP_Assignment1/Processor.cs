@@ -17,22 +17,46 @@ namespace NLP_Assignment1
 
 			for (int i = 0; i < contentArray.Length; i++)
 			{
-				if (contentArray[i] == "")
-					continue;
+                // special case: assign end-marker #e at the end of the set, break out of the loop after doing this (no need to process trailing empty lines)
+                if (i == contentArray.Length-2)
+                {
+                    res.Add("#e");
+                    break;
+                }
 
-				string[] tokens = contentArray[i].Split('\t');
+                // when the application encounters an empty line
+				else if (contentArray[i] == "")
+                {
+                    res.Add("#e");
+                    res.Add("#s");
+                }
 
-				// LEGACY: processing of the ID field of the .conll file might not be necessary for this assignment...
-				//string idval = tokens.ElementAt(0);
+                // when the application encounters a line containing a tagged word
+                else
+                {
+                    // special case: assign start-marker #s at the beginning of the set
+                    if (i == 0)
+                    {
+                        res.Add("#s");
+                    }
 
-				string[] wordSplit = tokens.ElementAt(1).Split('_');
-				string word = wordSplit.ElementAt(0);
+                    string[] tokens = contentArray[i].Split('\t');
 
-				word = word.Trim();
-				res.Add(word);
+                    string id_field = tokens.ElementAt(0);
+                    string word_field = tokens.ElementAt(1);
 
-				// LEGACY: processing of the ID field of the .conll file might not be necessary for this assignment...
-				//intList.Add(idval);	// NOTE: this statement was moved from DataManager
+                    //word = word.Trim();
+                    //res.Add(word);
+
+                    // NOTE: just in case..
+                    word_field = word_field.Trim();
+                    res.Add(word_field);
+
+                    // LEGACY: processing of the ID field of the .conll file might not be necessary for this assignment...
+                    //intList.Add(idval);	// NOTE: this statement was moved from DataManager
+                }
+				
+				
 			}
 
 			return res;
@@ -85,12 +109,13 @@ namespace NLP_Assignment1
 
 		// TODO_LOW:    fix this method so that it can return both Dictionary<string, float>
 		//              and Dictionary<string, BigRational> through the use of "out" and "ref"
-		internal Dictionary<string, BigRational> CalcProb	(Dictionary<string, int> countBigrams, Dictionary<string, int> countUnigrams, Enum storage)
+        // TODO_LOW: fix support for Laplace add-one smoothing when using float type?
+		internal Dictionary<string, BigRational> CalcProb	(Dictionary<string, int> countBigrams, Dictionary<string, int> countUnigrams, Enum storage, Enum smoothing)
 		{
 
 			Dictionary<string, BigRational> res_bigrat = new Dictionary<string, BigRational>();
 			Dictionary<string, float> res = new Dictionary<string, float>();
-			BigRational prob_bigrat;
+            BigRational prob_bigrat = new BigRational(1,1);
 			float prob;
 			   
 
@@ -118,8 +143,21 @@ namespace NLP_Assignment1
 						
 					else if (storage.Equals(Storage.BIGRAT))
 					{
-						prob_bigrat = new BigRational(bigramcount, unigramcount);
-						res_bigrat[entry.Key] = prob_bigrat;
+                        if (smoothing.Equals(Smoothing.ADDONE))
+                        {
+                            int numerator = bigramcount + 1;
+                            int denominator = unigramcount + countUnigrams.Count;
+
+                            prob_bigrat = new BigRational(numerator, denominator);
+                            res_bigrat[entry.Key] = prob_bigrat;
+                        }
+
+                        if (smoothing.Equals(Smoothing.NONE))
+                        {
+                            prob_bigrat = new BigRational(bigramcount, unigramcount);
+                            res_bigrat[entry.Key] = prob_bigrat;
+                        }
+						
 
 						if (LanguageModel.verbosity == Verbosity.TEST_CALCPROB_PRINT_NGRAMCOUNTS_BIGRAT)
 						{
@@ -150,6 +188,7 @@ namespace NLP_Assignment1
 				throw new NotImplementedException("fix return types of this function!");
 			// TODO_LOW: fix this so that you can return a float, this error occurs because this method only returns one datatype (BigRational for now...)
 			// return res;
+
 			else if (storage.Equals(Storage.BIGRAT))
 				return res_bigrat;
 
@@ -158,12 +197,14 @@ namespace NLP_Assignment1
 
 		// TODO_LOW:    fix this so that you can send both Dictionary<string, float> and Dictionary<string, BigRational>, using "optional"
 		//              so that we're able to send either "probListBigrams_bigrat" or "probListBigrams"
-		internal double CalcPerplex(Dictionary<string, int> countUnigrams, Dictionary<string, BigRational> probListBigrams, Enum storage)
+		internal decimal CalcPerplex(Dictionary<string, int> countUnigrams, Dictionary<string, BigRational> probListBigrams, Enum storage)
 		{
 			// --variables for counters and results of processing--
 			//      --results--
-			int n = 0;	// CLEANUP: sum_e is no longer in use, can be safely deleted?
+            int n = 0;
+            // CLEANUP: sum_e is no longer in use, can be safely deleted?
 			double sum = 0, sum_e = 0;
+            decimal sum_e_hardcoded = 0;
 
 			//      --counters & dev variables--
 			int counter = 0;
@@ -265,23 +306,37 @@ namespace NLP_Assignment1
 			string output = BigRationalExtensions.ToDecimalString(bigrat, 1000);
 			Console.WriteLine("BigRational (toDecimalString): " + output);
 
+            // FIX:     because we calculated perplex after implementing start & end-markers, we need to recalculate this with the new values
+            // NOTE:    the description below describes how to calculate perplexity without start & end-markers and without implementing management of unknown words
 			// TODO:	because C# has difficulty handling very small numbers, we will calculate "sum_e"
 			//			by inputting the "sum" into a computational engine (such as Wolfram Alpha) and extracting
 			//			"sum_e" which can be used in the subsequent steps to calculate the perplexity.
-			// LINKS:	http://www.wolframalpha.com/input/?i=e%5E%28-174535%29
-			//			http://www.wolframalpha.com/input/?i=e%5E%28-174535.446785493%29
-			// QUESTION: which one of the above calculations to use (make sure WA correctly interprets input)
-
-
+			// LINK:	http://www.wolframalpha.com/input/?i=e%5E%28-174535.446785493%29
+            // EXTERNAL:    this number was calculated through wolfram alpha:
+            //              1.6541105885843545100551470696874531291108711955629919916855659990642064458619384300080
+            //              284241984176186094758979992376887731735906925163945239440931530517915804023855480363215
+            //              7957730260930179126966852901223646001084199656991457820174231... × 10^-75800
+            // NOTE:        C# has difficulty handling this number, we will invert it to continue with the perplexity calculation
 
 			// --STEP: inverting sum--
+            // LINK:    http://www.wolframalpha.com/input/?i=1%2Fe%5E%28-174535.446785493%29
+            // NOTE:    C# has difficulty with handling the number 1/e^(-174535.446785493)
+            //          We have calculated this number with wolfram alpha:
+            //          6.04554500104998935711733071395160523237170900189086752690959951862974246839745464388983577972127413041233
+            //          7843819177174613557637995137097258865503608392846520743003129861716961802231406502134171634994161639926069
+            //          103416553130558789805554... × 10^75799
 			
 			// --STEP: normalizing sum by the root of N--
+            // LINK:    http://www.wolframalpha.com/input/?i=%281%2Fe%5E%28-174535.446785493%29%29%5E%281%2F75970%29
+            // NOTE:    C# has a difficulty with calculating the root when the argument provided consists of very large numbers
+            //          We have calculated this number with wolfram alpha:
+            //          9.94854108007602812177072860401898554115372243591722588104955931582742967481942169505813521900927379428535
+            //          5594929572236758991481328872819494773771651499871083331169747341427166337549459064678348218047152739124260
+            //          7546365242329060695883293875644...
+            //          Rounding down we will store this number with a precision of 6 decimals.
+            decimal perplex = 9.948541m;
 
-
-			// FIX: return res once we have calculated perplexity!
-			//return res;
-			return sum;
+			return perplex;
 
 		}
 

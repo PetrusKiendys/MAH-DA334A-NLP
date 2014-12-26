@@ -21,6 +21,12 @@ internal enum Storage
 	BIGRAT
 }
 
+internal enum Smoothing
+{
+    NONE,
+    ADDONE
+}
+
 internal enum NGram
 {
 	UNIGRAM,

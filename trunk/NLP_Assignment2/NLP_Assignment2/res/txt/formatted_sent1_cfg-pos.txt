@@ -1,0 +1,22 @@
+(SENT
+	(NNP
+		(JJP
+			(JJ
+				Individuell
+			)
+		)
+		(NN
+			beskattning
+		)
+		(PPP
+			(PP
+				av
+			)
+			(NNP
+				(NN
+					arbetsinkomster
+				)
+			)
+		)
+	)
+)

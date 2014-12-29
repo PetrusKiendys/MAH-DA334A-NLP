@@ -11,6 +11,14 @@ namespace NLP_Assignment2
 		{
 			ParsingModelExtractor pme = new ParsingModelExtractor();
 			pme.Run();
+
+			// Petrus TreeNode testkod
+//			TreeNode rootNode = new TreeNode();
+            
+//            			string example_sentence = "(SENT (RTP (ATP (AT Individuell))(RT beskattning)(ETP (ET av)(PAP (PA arbetsinkomster)))))";
+//			string[] nodes_string = { "SENT", "RTP", "ATP", "AT", "individuell", "RT", "beskattning", "ETP", "ET", "av", "PAP", "PA", "arbetsinkomster" };
+
+//			rootNode.Value = nodes_string[0];
 		}
 	}
 }

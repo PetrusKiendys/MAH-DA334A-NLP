@@ -1,0 +1,12 @@
+(SENT
+	(VBP
+		(NNP
+			(NN
+				Kommunalskatteavdraget
+		)
+			)
+		(VB
+			slopas
+		)
+	)
+)

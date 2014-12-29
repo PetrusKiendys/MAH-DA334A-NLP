@@ -9,8 +9,14 @@ namespace NLP_Assignment2
 	{
 		static void Main(string[] args)
 		{
-			ParsingModelExtractor pme = new ParsingModelExtractor();
-			pme.Run();
+//			ParsingModelExtractor pme = new ParsingModelExtractor();
+//			pme.Run();
+            ParsingModelExtractor2 pme2 = new ParsingModelExtractor2();
+            pme2.Run();
+
+            // the console window is not closed when the application is done running
+            Console.Read();
+
 
 			// Petrus TreeNode testkod
 //			TreeNode rootNode = new TreeNode();

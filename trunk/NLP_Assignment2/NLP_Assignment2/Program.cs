@@ -9,18 +9,16 @@ namespace NLP_Assignment2
 	{
 		static void Main(string[] args)
 		{
-//			ParsingModelExtractor pme = new ParsingModelExtractor();
-//			pme.Run();
-            ParsingModelExtractor2 pme2 = new ParsingModelExtractor2();
-            pme2.Run();
+			ParsingModelExtractor pme = new ParsingModelExtractor();
+			pme.Run();
 
-            // the console window is not closed when the application is done running
-            Console.Read();
+			// keep the console window open/active at the end of runtime
+			Console.Read();
 
 
 			// Petrus TreeNode testkod
 //			TreeNode rootNode = new TreeNode();
-            
+			
 //            			string example_sentence = "(SENT (RTP (ATP (AT Individuell))(RT beskattning)(ETP (ET av)(PAP (PA arbetsinkomster)))))";
 //			string[] nodes_string = { "SENT", "RTP", "ATP", "AT", "individuell", "RT", "beskattning", "ETP", "ET", "av", "PAP", "PA", "arbetsinkomster" };
 

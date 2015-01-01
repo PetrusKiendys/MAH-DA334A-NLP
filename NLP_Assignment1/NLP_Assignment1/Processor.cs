@@ -93,6 +93,7 @@ namespace NLP_Assignment1
 			return res;
 		}
 
+		// TODO_LOW: rename parameters to something more specific if possible..
 		internal List<string> ExtractDiffWords(Dictionary<string, int> dictionary1, Dictionary<string, int> dictionary2)
 		{
 
@@ -134,7 +135,6 @@ namespace NLP_Assignment1
 						else
 							res.Add(word, 1);
 					}
-
 					return res;
 
 				// count bigrams
@@ -154,11 +154,10 @@ namespace NLP_Assignment1
 								res.Add(bigram, 1);
 						}
 					}
-
 					return res;
+				default:
+					throw new ArgumentException("Illegal NGram enumerator was passed");
 			}
-
-			throw new ArgumentException("Illegal NGram enumerator was passed");
 		}
 
 		// TODO_LOW:    fix this method so that it can return both Dictionary<string, float>

@@ -10,7 +10,10 @@ namespace NLP_Assignment2
 	{
 		// TODO_LOW: global variables should be instantiated through a constructor (or in another way)?
 		internal Dictionary<string, int> grammarRules = new Dictionary<string, int>();
-		internal Dictionary<string[], int> lexiconRules = new Dictionary<string[], int>();
+		internal Dictionary<string, int> lexiconRules = new Dictionary<string, int>();
+
+		internal List<string> formattedGrammarRules;
+		internal List<string> formattedLexiconRules;
 
 		internal string LoadFile(string path)
 		{

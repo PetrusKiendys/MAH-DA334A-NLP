@@ -5,9 +5,6 @@ using System.Text;
 
 namespace NLP_Assignment2
 {
-// TODO: at some point methods need to be generalized for both construction of grammar and lexicon files
-//		 nodes need to be extracted with and without words
-//		 use Enums to do this
 	class ParsingModelExtractor
 	{
 		internal void Run()
@@ -17,11 +14,16 @@ namespace NLP_Assignment2
 
 			string data = dm.LoadFile("../../res/data/talbanken-cfg_pos-train.cfg");
 			string[] sentences = data.Split('\n');
-			sentences = sentences.Take(sentences.Count()-1).ToArray();  // getting rid of the last empty row in the data file
-			proc.ExtractRules(sentences, ExtractMode.GRAMMAR, dm.grammarRules);
-			proc.ExtractRules(sentences, ExtractMode.LEXICON, dm.lexiconRules);
+			sentences = sentences.Take(sentences.Count()-1).ToArray();	// getting rid of the last empty row in the data file
 
+			proc.ExtractRules(sentences, dm.grammarRules, ExtractMode.GRAMMAR);
+			//string[] tempSentences = {"(SENT (NNP (JJP (JJ Individuell))(NN beskattning)(PPP (PP av)(NNP (NN arbetsinkomster)))))"};
+			//proc.ExtractRules(tempSentences, ExtractMode.LEXICON, dm.lexiconRules);
+			proc.ExtractRules(sentences, dm.lexiconRules, ExtractMode.LEXICON);
 
+			// format grammar & lexicon
+			dm.formattedGrammarRules = proc.FormatRules(dm.grammarRules, ExtractMode.GRAMMAR);
+			dm.formattedLexiconRules = proc.FormatRules(dm.lexiconRules, ExtractMode.LEXICON);
 		}
 	}
 }

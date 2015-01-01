@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using System.Text;
-using System.Text.RegularExpressions;
 
 namespace NLP_Assignment2
 {
 	class TreePathingUtility
 	{
+		// TODO_LOW: remove Run() method later (as this class is only used for reference)
 		public void Run()
 		{
 			string filepath = "../../res/data/talbanken-cfg_pos-train.cfg";

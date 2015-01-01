@@ -6,13 +6,12 @@ using System.Text;
 namespace NLP_Assignment2
 {
 	// TODO_LOW: may have to rename some methods, "Count..." and "Extract..." are not describing the functionality of the methods in a clear fashion.
-	// TODO_LOW: some methods in this class are overloaded, consider implementing a solution which does not require overloading (rather, the functionality should be handled by the same method)
-	//			 http://stackoverflow.com/questions/1996426/pass-multiple-optional-parameters-to-a-c-sharp-function (relevant?)
 
 	class Processor
 	{
+
 		/* PSEUDOCODE:
-		 * func void CountRules (TreeNode node)
+		 * func void CountRules (TreeNode node, ...)
 		 * {
 		 *      if node has children
 		 *          create rule node --> children
@@ -23,56 +22,79 @@ namespace NLP_Assignment2
 		// TODO_LOW: this method could return a "RuleGatherer" which stores the rules of one tree (a node and all of sub-nodes)
 		//			 this structure could then be inserted into a "RuleManager" or counter that extracts the rules
 		//			 implementing this requires additional passing of data but makes CountRules more loosely coupled from the storage of rules
+		// TODO_LOW: see if there's a way to increase readability of this implementation
 		private void CountRules(TreeNode node, Dictionary<string, int> ruleset, ExtractMode extractmode)
 		{
 			if (node.hasChildren())
 			{
-				// step 1 - create rule for node --> children
-
 				string rule, lhs, rhs = "";
 				List<string> children = new List<string>();
 
-				// step 1.1 - getting the left hand side of the rule
-				lhs = node.Value;
-
-				// step 1.2 - getting the right hand side of the rule
-				for (int i = 0; i < node.countChildren(); i++)
+				switch (extractmode)
 				{
-					children.Add(node.getChild(i).Value);
+					case ExtractMode.GRAMMAR:
+						// step 1 - create rule for node --> children
+						// step 1.1 - getting the left hand side of the rule
+						lhs = node.Value;
+
+						// step 1.2 - getting the right hand side of the rule
+						for (int i = 0; i < node.countChildren(); i++)
+						{
+							children.Add(node.getChild(i).Value);
+						}
+						children.Sort();	// sort the children strings so that permutations of the same rule is not stored separately
+
+						for (int i = 0; i < node.countChildren(); i++)
+						{
+							rhs += children[i] + " ";
+						}
+						rhs = rhs.Trim();
+
+						// step 1.3 - concatenate lhs and rhs to make the key for the rule
+						rule = lhs + " " + rhs;
+
+						// step 2 - store the rule
+						if (ruleset.ContainsKey(rule))
+							ruleset[rule] = ruleset[rule] + 1;
+						else
+							ruleset.Add(rule, 1);
+
+						// step 3 - call CountRules for each child
+						for (int i = 0; i < node.countChildren(); i++)
+						{
+							CountRules(node.getChild(i), ruleset, extractmode);
+						}
+						break;
+
+					case ExtractMode.LEXICON:
+						// step 1 - create rule for node --> children
+						// step 1.1 - getting the left hand side of the rule
+						lhs = node.Value;
+
+						for (int i = 0; i < node.countChildren(); i++)
+						{
+							// step 1.2 - getting the right hand side of the rule
+							rhs = node.getChild(i).Value;
+
+							// step 1.3 - concatenate lhs and rhs to make the key for the rule
+							rule = lhs + " " + rhs;
+
+							// step 2 - store the rule
+							if (ruleset.ContainsKey(rule))
+								ruleset[rule] = ruleset[rule] + 1;
+							else
+								ruleset.Add(rule, 1);
+
+							// step 3 - call CountRules for each child
+							CountRules(node.getChild(i), ruleset, extractmode);
+						}
+						break;
+
+					default:
+						throw new ArgumentException("Illegal ExtractMode enumerator was passed");
 				}
-				children.Sort();	// sort the children strings so that permutations of the same rule is not stored separately
 
-				for (int i = 0; i < node.countChildren(); i++)
-				{
-					rhs += children[i] + " ";
-				}
-				rhs = rhs.Trim();
-
-				// step 1.3 - concatenate lhs and rhs to make the key for the rule
-				rule = lhs + " " + rhs;
-
-				// step 2 - store the rule
-				if (ruleset.ContainsKey(rule))
-					ruleset[rule] = ruleset[rule] + 1;
-				else
-					ruleset.Add(rule, 1);
-
-				// step 3 - call CountRules for each child
-				for (int i = 0; i < node.countChildren(); i++)
-				{
-					CountRules(node.getChild(i), ruleset, extractmode);
-				}
 			}
-		}
-
-		// NOTE: this is an overloaded method of CountRules(...), see the "original" method for a description of usage
-		private void CountRules(TreeNode node, Dictionary<string[], int> ruleset, ExtractMode extractmode)
-		{
-			// BOOKMARK
-			// TODO: implement an algorithm that stores rules in "ruleset" on the following format:
-			//			ruleset key[0] = lhs
-			//			ruleset key[1] = rhs
-			//			ruleset value = count of lhs --> rhs rule
 		}
 
 
@@ -129,6 +151,7 @@ namespace NLP_Assignment2
 			return res;
 		}
 
+		// given a str which holds a bracketing formatted phrase structure tree, this method extracts all siblings (node children of the currently processed node) of str
 		private List<string> GetChildrenList(string str)
 		{
 			List<string> res = new List<string>();
@@ -164,34 +187,58 @@ namespace NLP_Assignment2
 			}
 		}
 
-		internal void ExtractRules(string[] sentences, ExtractMode extractmode, Dictionary<string, int> ruleset)
+		internal void ExtractRules(string[] sentences, Dictionary<string, int> ruleset, ExtractMode extractmode)
 		{
+			for (int i = 0; i < sentences.Length; i++)
+			{
+				TreeNode node = ExtractNode(sentences[i], extractmode);
+				CountRules(node, ruleset, extractmode);
+			}
+		}
+
+		// formats the rules of the ruleset into a specific string format (which will later be written to file)
+		internal List<string> FormatRules(Dictionary<string, int> ruleset, ExtractMode extractmode)
+		{
+			List<string> res = new List<string>();
+
 			switch (extractmode)
 			{
 				case ExtractMode.GRAMMAR:
-					for (int i = 0; i < sentences.Length; i++)
+					foreach (KeyValuePair<string, int> entry in ruleset)
 					{
-						TreeNode node = ExtractNode(sentences[i], extractmode);
-						CountRules(node, ruleset, extractmode);
-					}
-					break;
-			}
-		}
+						string rule = entry.Key;
+						string count = entry.Value.ToString();
 
-		// NOTE: this is an overloaded method of ExtractRules(...), see the "original" method for a description of usage
-		internal void ExtractRules(string[] sentences, ExtractMode extractmode, Dictionary<string[], int> ruleset)
-		{
-			switch (extractmode)
-			{
+						res.Add(count + " " + rule);
+					}
+					return res;
+
 				case ExtractMode.LEXICON:
-					for (int i = 0; i < sentences.Length; i++)
+					foreach (KeyValuePair<string, int> entry in ruleset)
 					{
-						TreeNode node = ExtractNode(sentences[i], extractmode);
-						CountRules(node, ruleset, extractmode);
+						string[] rule = entry.Key.Split(' ');
+						string lhs = rule[0];
+						string rhs = rule[1];
+						string count = entry.Value.ToString();
+
+						// PSEUDOCODE:
+						// if res.key.substring(0, indexof(' ') == rhs
+						//		...
+						// TODO_LOW: possible to optimize this implementation (so that res is not iterated over unecessarily)?
+						foreach (string str in res)
+						{
+							if (str.Substring(0, str.IndexOf(' ')) == rhs)
+								;	// add lhs + count to str
+							else
+								res.Add(rhs + " " + lhs + " " + count);
+						}
+						
 					}
-					break;
+					return res;
+
+				default:
+					throw new ArgumentException("Illegal ExtractMode enumerator was passed");
 			}
 		}
-
 	}
 }

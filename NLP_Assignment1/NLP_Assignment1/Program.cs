@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace NLP_Assignment1
 {
@@ -11,8 +10,11 @@ namespace NLP_Assignment1
 	{
 		static void Main(string[] args)
 		{
-            LanguageModel lm = new LanguageModel(Verbosity.NORMAL);
+			LanguageModel lm = new LanguageModel(Verbosity.NORMAL);
 			lm.Run();
+
+			// keep the console window open/active at the end of runtime
+			Console.Read();
 		}
 	}
 }

@@ -200,6 +200,7 @@ namespace NLP_Assignment2
 		internal List<string> FormatRules(Dictionary<string, int> ruleset, ExtractMode extractmode)
 		{
 			List<string> res = new List<string>();
+			List<string> rhslist = new List<string>();	// list that holds unique "right hand side" keys, used when formatting the lexicon
 
 			switch (extractmode)
 			{
@@ -221,18 +222,22 @@ namespace NLP_Assignment2
 						string rhs = rule[1];
 						string count = entry.Value.ToString();
 
-						// PSEUDOCODE:
-						// if res.key.substring(0, indexof(' ') == rhs
-						//		...
-						// TODO_LOW: possible to optimize this implementation (so that res is not iterated over unecessarily)?
-						foreach (string str in res)
+						// if the right hand side rule has not been added to res
+						if (!rhslist.Contains(rhs))
 						{
-							if (str.Substring(0, str.IndexOf(' ')) == rhs)
-								;	// add lhs + count to str
-							else
-								res.Add(rhs + " " + lhs + " " + count);
+							res.Add(rhs + " " + lhs + " " + count);
+							rhslist.Add(rhs);
 						}
-						
+
+						// if the right hand side rule has previously been added to res
+						else
+						{
+							string searchStr = rhs + " ";
+							string resStr = res.FirstOrDefault(x => x.StartsWith(searchStr));
+							int index = res.IndexOf(resStr);
+							
+							res[index] = res[index] + " " + lhs + " " + count;
+						}
 					}
 					return res;
 

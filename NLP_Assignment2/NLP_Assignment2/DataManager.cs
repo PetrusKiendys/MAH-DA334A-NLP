@@ -25,5 +25,21 @@ namespace NLP_Assignment2
 
 			return res;
 		}
+
+		// WARNING:	this method outputs a file with a blank newline at the end, this might cause unexpected errors when the file is passed to BitPar?
+		internal void SaveFile(string path, List<string> content)
+		{
+			FileStream file = new FileStream(path, FileMode.Create, FileAccess.Write);
+			StreamWriter writer = new StreamWriter(file);
+
+			foreach (string entry in content)
+			{
+				writer.WriteLine(entry);
+			}
+
+			writer.Close();
+			file.Close();
+		}
+
 	}
 }

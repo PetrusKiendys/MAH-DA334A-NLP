@@ -11,7 +11,7 @@ internal enum Verbosity
 	TEST_CALCPROB_PRINT_NGRAMCOUNTS_BIGRAT,
 	TEST_CALCPERPLEX_PRINT_SUM_AND_TERMS_IN_LOGSPACE,
 	TEST_CALCPERPLEX_DO_APPROX_OF_SUM_OUTSIDE_LOGSPACE,
-    TEST_CALCPERPLEX_PRINT_SMOOTHING_VALUES,
+	TEST_CALCPERPLEX_PRINT_SMOOTHING_VALUES,
 	TEST,
 	NORMAL,
 	SILENT
@@ -24,8 +24,8 @@ internal enum Storage
 
 internal enum Smoothing
 {
-    NONE,
-    ADDONE
+	NONE,
+	ADDONE
 }
 
 internal enum NGram
@@ -37,7 +37,7 @@ internal enum NGram
 
 internal enum UnknownHandler
 {
-    NONE,
-    EVERY_NTH_ROW,
-    RANDOMIZE
+	NONE,
+	EVERY_NTH_ROW,
+	RANDOMIZE
 }

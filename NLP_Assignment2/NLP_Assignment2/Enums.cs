@@ -8,3 +8,9 @@ internal enum ExtractMode
 	GRAMMAR,
 	LEXICON
 }
+
+public enum Separator
+{
+    WHITESPACE,
+    TAB
+}

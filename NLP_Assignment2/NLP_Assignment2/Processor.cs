@@ -197,10 +197,21 @@ namespace NLP_Assignment2
 		}
 
 		// formats the rules of the ruleset into a specific string format (which will later be written to file)
-		internal List<string> FormatRules(Dictionary<string, int> ruleset, ExtractMode extractmode)
+		internal List<string> FormatRules(Dictionary<string, int> ruleset, ExtractMode extractmode, Separator separator)
 		{
 			List<string> res = new List<string>();
 			List<string> rhslist = new List<string>();	// list that holds unique "right hand side" keys, used when formatting the lexicon
+
+            string sep = "";
+            if (separator.Equals(Separator.WHITESPACE))
+            {
+                sep = " ";
+            }
+            else if (separator.Equals(Separator.TAB))
+            {
+                sep = "\t";
+            }
+
 
 			switch (extractmode)
 			{
@@ -210,7 +221,7 @@ namespace NLP_Assignment2
 						string rule = entry.Key;
 						string count = entry.Value.ToString();
 
-						res.Add(count + " " + rule);
+                        res.Add(count + sep + rule);
 					}
 					return res;
 
@@ -225,18 +236,18 @@ namespace NLP_Assignment2
 						// if the right hand side rule has not been added to res
 						if (!rhslist.Contains(rhs))
 						{
-							res.Add(rhs + " " + lhs + " " + count);
+                            res.Add(rhs + sep + lhs + sep + count);
 							rhslist.Add(rhs);
 						}
 
 						// if the right hand side rule has previously been added to res
 						else
 						{
-							string searchStr = rhs + " ";
+                            string searchStr = rhs + sep;
 							string resStr = res.FirstOrDefault(x => x.StartsWith(searchStr));
 							int index = res.IndexOf(resStr);
-							
-							res[index] = res[index] + " " + lhs + " " + count;
+
+                            res[index] = res[index] + sep + lhs + sep + count;
 						}
 					}
 					return res;

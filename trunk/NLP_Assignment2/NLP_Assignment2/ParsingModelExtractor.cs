@@ -28,8 +28,8 @@ namespace NLP_Assignment2
 
 			// format grammar and lexicon
 			Console.WriteLine("Formatting grammar and lexicon lists...");
-			dm.formattedGrammarRules = proc.FormatRules(dm.grammarRules, ExtractMode.GRAMMAR);
-			dm.formattedLexiconRules = proc.FormatRules(dm.lexiconRules, ExtractMode.LEXICON);
+            dm.formattedGrammarRules = proc.FormatRules(dm.grammarRules, ExtractMode.GRAMMAR, Separator.TAB);
+            dm.formattedLexiconRules = proc.FormatRules(dm.lexiconRules, ExtractMode.LEXICON, Separator.TAB);
 
 			// save the grammar and lexicon rules to text files
 			if (file.Contains("pos"))

@@ -1,0 +1,1 @@
+evalb talbanken-cfg_dep-test.cfg outdep.txt > evalb-dep.txt

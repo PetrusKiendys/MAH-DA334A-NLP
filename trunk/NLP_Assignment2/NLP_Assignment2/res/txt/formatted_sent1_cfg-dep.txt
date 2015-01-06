@@ -1,0 +1,22 @@
+(SENT
+	(RTP
+		(ATP
+			(AT
+				Individuell
+			)
+		)
+		(RT
+			beskattning
+		)
+		(ETP
+			(ET
+				av
+			)
+			(PAP
+				(PA
+					arbetsinkomster
+				)
+			)
+		)
+	)
+)

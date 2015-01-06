@@ -1,0 +1,12 @@
+(SENT
+	(RTP
+		(SSP
+			(SS
+				Kommunalskatteavdraget
+			)
+		)
+		(RT
+			slopas
+		)
+	)
+)

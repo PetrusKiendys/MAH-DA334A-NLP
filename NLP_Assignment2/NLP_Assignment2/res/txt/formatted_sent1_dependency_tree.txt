@@ -1,0 +1,4 @@
+ROOT(beskattning)
+	AT(Individuell)
+	ET(av)
+		PA(arbetsinkomster)

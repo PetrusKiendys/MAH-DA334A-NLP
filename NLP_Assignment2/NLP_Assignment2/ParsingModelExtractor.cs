@@ -5,6 +5,11 @@ using System.Text;
 
 namespace NLP_Assignment2
 {
+	// TODO_LOW: maybe rename ParsingModelExtractor to something more clear..
+	//			 (which makes it clear that it outputs rule sets in the form of grammar and lexicon files)
+	//		f.e. - RulesExtractor (maybe not, too many functions in Processor.cs use this naming style?)
+	//			 - Phrase Structure Tree Rules Extractor (messy..)
+	//			 - Bracketing Format Tree Rules Extractor (still messy but getting somewhere..)
 	class ParsingModelExtractor
 	{
 		internal void Run(string file)
@@ -28,8 +33,8 @@ namespace NLP_Assignment2
 
 			// format grammar and lexicon
 			Console.WriteLine("Formatting grammar and lexicon lists...");
-            dm.formattedGrammarRules = proc.FormatRules(dm.grammarRules, ExtractMode.GRAMMAR, Separator.TAB);
-            dm.formattedLexiconRules = proc.FormatRules(dm.lexiconRules, ExtractMode.LEXICON, Separator.TAB);
+			dm.formattedGrammarRules = proc.FormatRules(dm.grammarRules, ExtractMode.GRAMMAR, Separator.TAB);
+			dm.formattedLexiconRules = proc.FormatRules(dm.lexiconRules, ExtractMode.LEXICON, Separator.TAB);
 
 			// save the grammar and lexicon rules to text files
 			if (file.Contains("pos"))

@@ -1,20 +1,17 @@
+<< main >>
 - properly draw tree structures from training set
 	use camera snapshot for reference, ultimately this is best presented with a diagramming tool (ie. MS Visio)
 	make sure the tree structures are validated
 		f.e. create indented and newline separated bracketting formatted trees (see \trunk\NLP_Assignment2\NLP_Assignment2\res\txt)
 - gather all discussion of questions in a report
 	this could also be done in a simple textfile but a rich text format report is good for presenting parse trees etc.
-- extract a lexicon and a grammar file (involves coding)
 - answer discussion questions
-	consider Algorithm 1 and comment on it
-	quantity of rules extracted from [pos-cfg] and [dep-cfg]
-		need to fully implement a grammar and lexicon file extractor to answer this...
 	explain parse results (at least half a page)
-- run BitPar and analyze output
-- run Python/Perl script
-	look up how to run it
-	also open the script itself and analyze what it does (to get an understanding of what we're doing...)
 - run Evalb
 	analyze overall summary
 		precision, recall, f1-measure
 			look up the definition of these metrics!
+
+<< extra >>
+- fully implement runall.bat
+	to fetch lexicon & grammar files from the project and run bitpar --> post-process --> evalb (while also moving around those I/O files)

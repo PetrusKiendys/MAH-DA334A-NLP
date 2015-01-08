@@ -3,3 +3,9 @@ Joakim Nivre @ http://stp.lingfil.uu.se/
 		http://stp.lingfil.uu.se/~nivre/master/
 			http://stp.lingfil.uu.se/~nivre/master/statmet4.html
 			http://stp.lingfil.uu.se/~nivre/master/nlp_assignment2alt.html
+Evalb
+	http://nlp.cs.nyu.edu/evalb/
+	https://www.aclweb.org/anthology/P/P14/P14-2109.xhtml
+	http://courses.washington.edu/ling571/ling571_fall_2010/slides/evalb_improved_pcky.pdf
+PARSEVAL (precision & recall)
+	https://linguistics.stackexchange.com/questions/1873/is-there-a-well-established-metric-to-measure-the-effectiveness-of-a-parsing-alg

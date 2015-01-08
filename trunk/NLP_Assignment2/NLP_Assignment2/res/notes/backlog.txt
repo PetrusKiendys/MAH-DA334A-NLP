@@ -15,3 +15,4 @@
 << extra >>
 - fully implement runall.bat
 	to fetch lexicon & grammar files from the project and run bitpar --> post-process --> evalb (while also moving around those I/O files)
+- modify post-process.pl to output "\n" instead of "(TOP nil)\n"

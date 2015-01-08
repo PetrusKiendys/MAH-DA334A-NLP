@@ -4,7 +4,6 @@
 	make sure the tree structures are validated
 		f.e. create indented and newline separated bracketting formatted trees (see \trunk\NLP_Assignment2\NLP_Assignment2\res\txt)
 - gather all discussion of questions in a report
-	this could also be done in a simple textfile but a rich text format report is good for presenting parse trees etc.
 - answer discussion questions
 	explain parse results (at least half a page)
 - run Evalb
@@ -15,4 +14,3 @@
 << extra >>
 - fully implement runall.bat
 	to fetch lexicon & grammar files from the project and run bitpar --> post-process --> evalb (while also moving around those I/O files)
-- modify post-process.pl to output "\n" instead of "(TOP nil)\n"

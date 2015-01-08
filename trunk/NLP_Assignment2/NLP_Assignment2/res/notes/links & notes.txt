@@ -9,3 +9,5 @@ Evalb
 	http://courses.washington.edu/ling571/ling571_fall_2010/slides/evalb_improved_pcky.pdf
 PARSEVAL (precision & recall)
 	https://linguistics.stackexchange.com/questions/1873/is-there-a-well-established-metric-to-measure-the-effectiveness-of-a-parsing-alg
+difference between constituency & dependancy grammar
+	http://stackoverflow.com/questions/10401076/difference-between-constituency-parser-and-dependency-parser

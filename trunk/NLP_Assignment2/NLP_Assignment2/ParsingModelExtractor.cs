@@ -33,19 +33,19 @@ namespace NLP_Assignment2
 
 			// format grammar and lexicon
 			Console.WriteLine("Formatting grammar and lexicon lists...");
-			dm.formattedGrammarRules = proc.FormatRules(dm.grammarRules, ExtractMode.GRAMMAR, Separator.TAB);
-			dm.formattedLexiconRules = proc.FormatRules(dm.lexiconRules, ExtractMode.LEXICON, Separator.TAB);
+			dm.formattedGrammarRules = proc.FormatRules(dm.grammarRules, out dm.grammarRulesCounter, ExtractMode.GRAMMAR, Separator.TAB);
+			dm.formattedLexiconRules = proc.FormatRules(dm.lexiconRules, out dm.lexiconRulesCounter, ExtractMode.LEXICON, Separator.TAB);
 
 			// save the grammar and lexicon rules to text files
 			if (file.Contains("pos"))
 			{
-				dm.SaveFile("../../out/grammar-pos.txt", dm.formattedGrammarRules);
-				dm.SaveFile("../../out/lexicon-pos.txt", dm.formattedLexiconRules);
+				dm.SaveFile("../../out/grammar-pos.txt", dm.formattedGrammarRules, ExtractMode.GRAMMAR);
+				dm.SaveFile("../../out/lexicon-pos.txt", dm.formattedLexiconRules, ExtractMode.LEXICON);
 			}
 			else if (file.Contains("dep"))
 			{
-				dm.SaveFile("../../out/grammar-dep.txt", dm.formattedGrammarRules);
-				dm.SaveFile("../../out/lexicon-dep.txt", dm.formattedLexiconRules);
+				dm.SaveFile("../../out/grammar-dep.txt", dm.formattedGrammarRules, ExtractMode.GRAMMAR);
+				dm.SaveFile("../../out/lexicon-dep.txt", dm.formattedLexiconRules, ExtractMode.LEXICON);
 			}
 			Console.WriteLine("The grammar and lexicon files have been successfully created for "+filename+"\n");
 			

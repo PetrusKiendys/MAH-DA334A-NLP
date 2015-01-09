@@ -13193,3 +13193,5 @@ ovärdiga	JJ	1
 mannekäng	NN	1
 kläddocka	NN	1
 arena	NN	1
+============================================================================
+Number of unique lexicon rules: 13920

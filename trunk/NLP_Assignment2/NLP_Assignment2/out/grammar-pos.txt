@@ -3371,3 +3371,5 @@
 1	KNP KN NNP NNP PPP PSP
 1	VBP ABP IEP MIDP VB
 1	VBP NNP PLP PNP PNP PPP VB
+============================================================================
+Number of unique grammar rules: 3373

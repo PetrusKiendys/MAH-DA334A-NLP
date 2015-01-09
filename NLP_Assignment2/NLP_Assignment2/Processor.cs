@@ -6,7 +6,6 @@ using System.Text;
 namespace NLP_Assignment2
 {
 	// TODO_LOW: may have to rename some methods, "Count..." and "Extract..." are not describing the functionality of the methods in a clear fashion.
-
 	class Processor
 	{
 
@@ -197,8 +196,9 @@ namespace NLP_Assignment2
 		}
 
 		// formats the rules of the ruleset into a specific string format (which will later be written to file)
-		internal List<string> FormatRules(Dictionary<string, int> ruleset, ExtractMode extractmode, Separator separator)
+		internal List<string> FormatRules(Dictionary<string, int> ruleset, out int ruleCounter, ExtractMode extractmode, Separator separator)
 		{
+			ruleCounter = 0;							// counts the number of times a unique rule occurs
 			List<string> res = new List<string>();
 			List<string> rhslist = new List<string>();	// list that holds unique "right hand side" keys, used when formatting the lexicon
 
@@ -211,6 +211,10 @@ namespace NLP_Assignment2
 			{
 				sep = "\t";
 			}
+			else
+			{
+				throw new ArgumentException("Illegal Separator enumerator was passed");
+			} 
 
 
 			switch (extractmode)
@@ -222,6 +226,7 @@ namespace NLP_Assignment2
 						string count = entry.Value.ToString();
 
 						res.Add(count + sep + rule);
+						ruleCounter++;
 					}
 					return res;
 
@@ -238,6 +243,7 @@ namespace NLP_Assignment2
 						{
 							res.Add(rhs + sep + lhs + sep + count);
 							rhslist.Add(rhs);
+							ruleCounter++;
 						}
 
 						// if the right hand side rule has previously been added to res
@@ -248,6 +254,7 @@ namespace NLP_Assignment2
 							int index = res.IndexOf(resStr);
 
 							res[index] = res[index] + sep + lhs + sep + count;
+							ruleCounter++;
 						}
 					}
 					return res;

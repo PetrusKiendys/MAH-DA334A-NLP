@@ -10,6 +10,8 @@
 	analyze overall summary
 		precision, recall, f1-measure
 			look up the definition of these metrics!
+- remove /res/img/cam as many of the images are erroneous (alternatively replace the images with correct ones)
+	best to replace these with diagrams, both in native format for the diagramming tool and as jpeg/png exports
 
 << extra >>
 - fully implement runall.bat

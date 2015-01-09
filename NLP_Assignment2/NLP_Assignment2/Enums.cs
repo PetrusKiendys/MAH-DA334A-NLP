@@ -11,6 +11,6 @@ internal enum ExtractMode
 
 public enum Separator
 {
-    WHITESPACE,
-    TAB
+	WHITESPACE,
+	TAB
 }

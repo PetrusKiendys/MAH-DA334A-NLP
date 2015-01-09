@@ -223,6 +223,7 @@ namespace NLP_Assignment2
 					foreach (KeyValuePair<string, int> entry in ruleset)
 					{
 						string rule = entry.Key;
+                        rule = rule.Replace(' ', '\t');
 						string count = entry.Value.ToString();
 
 						res.Add(count + sep + rule);

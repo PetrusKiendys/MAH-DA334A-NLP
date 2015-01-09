@@ -14,3 +14,6 @@ Difference between constituency & dependancy grammar
 Head word
 	http://stackoverflow.com/questions/20500176/how-can-i-determine-the-head-word-in-a-sentence-using-nlp
 	http://en.wikipedia.org/wiki/Head_(linguistics)
+Re-map shortcut for switching documents in Notepad++ and disable doc list
+	http://superuser.com/questions/201001/disabling-doc-list-when-using-ctrl-tab-in-notepad
+	http://superuser.com/questions/299399/how-can-i-switch-tabs-in-notepad-via-ctrlpgup-down

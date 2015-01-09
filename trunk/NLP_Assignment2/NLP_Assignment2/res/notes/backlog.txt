@@ -16,3 +16,7 @@
 << extra >>
 - fully implement runall.bat
 	to fetch lexicon & grammar files from the project and run bitpar --> post-process --> evalb (while also moving around those I/O files)
+- edit repo log message
+	 [2015-01-09 16:06]
+- check if fixing tabs spacing bug for grammar fields produces a less erroneous bitpar output
+- bitpar crashes at the last two lines of grammar & lexicon files (which describe the total number of unique rules?)

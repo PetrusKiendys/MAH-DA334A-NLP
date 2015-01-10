@@ -26,8 +26,9 @@ namespace NLP_Assignment2
 			return res;
 		}
 
-		// WARNING:	this method outputs a file with a blank newline at the end, this might cause unexpected errors when the file is passed to BitPar?
-		internal void SaveFile(string path, List<string> content, ExtractMode extractmode)
+		// NOTE: When printUniqueRules is set to true, the number of unique grammar/lexicon rules will be written in the output file
+		//		 this should only be used for debug reasons as BitPar will crash when parsing these lines.
+		internal void SaveFile(string path, List<string> content, ExtractMode extractmode, bool printUniqueRules)
 		{
 			FileStream file = new FileStream(path, FileMode.Create, FileAccess.Write);
 			StreamWriter writer = new StreamWriter(file);
@@ -36,19 +37,22 @@ namespace NLP_Assignment2
 			{
 				writer.WriteLine(entry);
 			}
-			writer.WriteLine("============================================================================");
 
-			if (extractmode.Equals(ExtractMode.GRAMMAR))
+			if (printUniqueRules)
 			{
-				writer.WriteLine("Number of unique grammar rules: " + grammarRulesCounter);
+				writer.WriteLine("============================================================================");
+				if (extractmode.Equals(ExtractMode.GRAMMAR))
+				{
+					writer.WriteLine("Number of unique grammar rules: " + grammarRulesCounter);
+				}
+				else if (extractmode.Equals(ExtractMode.LEXICON))
+				{
+					writer.WriteLine("Number of unique lexicon rules: " + lexiconRulesCounter);
+				}
+				else
+					throw new ArgumentException("Illegal ExtractMode enumerator was passed");
 			}
-			else if (extractmode.Equals(ExtractMode.LEXICON))
-			{
-				writer.WriteLine("Number of unique lexicon rules: " + lexiconRulesCounter);
-			}
-			else
-				throw new ArgumentException("Illegal ExtractMode enumerator was passed");
-
+			
 			writer.Close();
 			file.Close();
 		}

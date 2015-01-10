@@ -39,13 +39,13 @@ namespace NLP_Assignment2
 			// save the grammar and lexicon rules to text files
 			if (file.Contains("pos"))
 			{
-				dm.SaveFile("../../out/grammar-pos.txt", dm.formattedGrammarRules, ExtractMode.GRAMMAR);
-				dm.SaveFile("../../out/lexicon-pos.txt", dm.formattedLexiconRules, ExtractMode.LEXICON);
+				dm.SaveFile("../../out/grammar-pos.txt", dm.formattedGrammarRules, ExtractMode.GRAMMAR, false);
+				dm.SaveFile("../../out/lexicon-pos.txt", dm.formattedLexiconRules, ExtractMode.LEXICON, false);
 			}
 			else if (file.Contains("dep"))
 			{
-				dm.SaveFile("../../out/grammar-dep.txt", dm.formattedGrammarRules, ExtractMode.GRAMMAR);
-				dm.SaveFile("../../out/lexicon-dep.txt", dm.formattedLexiconRules, ExtractMode.LEXICON);
+				dm.SaveFile("../../out/grammar-dep.txt", dm.formattedGrammarRules, ExtractMode.GRAMMAR, false);
+				dm.SaveFile("../../out/lexicon-dep.txt", dm.formattedLexiconRules, ExtractMode.LEXICON, false);
 			}
 			Console.WriteLine("The grammar and lexicon files have been successfully created for "+filename+"\n");
 			

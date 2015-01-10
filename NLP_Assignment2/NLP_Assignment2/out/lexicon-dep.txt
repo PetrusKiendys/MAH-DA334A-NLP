@@ -13260,5 +13260,3 @@ ovärdiga	AT	1
 mannekäng	CJ	1
 kläddocka	CJ	1
 arena	HD	1
-============================================================================
-Number of unique lexicon rules: 20618

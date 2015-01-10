@@ -4487,5 +4487,3 @@
 1	UAP	AAP	IOP	OOP	PLP	SSP	UA
 1	VOP	AAP	AAP	PLP	VO
 1	IFP	AAP	AAP	IF	KAP
-============================================================================
-Number of unique grammar rules: 4489

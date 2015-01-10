@@ -1,22 +1,11 @@
 << main >>
 - properly draw tree structures from training set
-	use camera snapshot for reference, ultimately this is best presented with a diagramming tool (ie. MS Visio)
+	save these in native format and also as exported images (.vpp for Visual Paradigm, ??? for MS Visio)
+	use camera snapshot for reference, ultimately this is best presented with a diagramming tool (ie. MS Visio, even Visual Paradigm works...)
+		remove /res/img/cam as many of the images are erroneous (alternatively replace the images with correct ones)
 	make sure the tree structures are validated
-		f.e. create indented and newline separated bracketting formatted trees (see \trunk\NLP_Assignment2\NLP_Assignment2\res\txt)
-- gather all discussion of questions in a report
-- answer discussion questions
-	explain parse results (at least half a page)
-- run Evalb
-	analyze overall summary
-		precision, recall, f1-measure
-			look up the definition of these metrics!
-- remove /res/img/cam as many of the images are erroneous (alternatively replace the images with correct ones)
-	best to replace these with diagrams, both in native format for the diagramming tool and as jpeg/png exports
+		refer to indented and newline separated bracketting formatted trees (see \trunk\NLP_Assignment2\NLP_Assignment2\res\txt)
 
 << extra >>
 - fully implement runall.bat
 	to fetch lexicon & grammar files from the project and run bitpar --> post-process --> evalb (while also moving around those I/O files)
-- edit repo log message
-	 [2015-01-09 16:06]
-- check if fixing tabs spacing bug for grammar fields produces a less erroneous bitpar output
-- bitpar crashes at the last two lines of grammar & lexicon files (which describe the total number of unique rules?)

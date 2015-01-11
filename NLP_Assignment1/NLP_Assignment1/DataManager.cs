@@ -11,14 +11,11 @@ namespace NLP_Assignment1
 	{
 		internal Dictionary<string, int> countUnigrams;
 		internal Dictionary<string, int> countBigrams;
-		internal Dictionary<string, float> probListBigrams;
-		internal Dictionary<string, BigRational> probListBigrams2;
-		// LEGACY: processing of the ID field of the .conll file might not be necessary for this assignment...
-		//internal List<string> intList = new List<string>();
+		internal Dictionary<string, BigRational> probListBigrams;
 		internal List<string> wordList;
 		internal decimal perplex;
 
-		// TODO_LOW: rename these "test set variables" to something better than "[var]TestSet" or "[var]2"
+		// TODO_LOW: rename these "test set variables" to something better than "[var]TestSet" or "[var]2"?
 		internal List<string> wordList2;
 		internal Dictionary<string, int> countUnigrams2;
 
@@ -28,7 +25,7 @@ namespace NLP_Assignment1
 		{
 			FileStream file = new FileStream(path, FileMode.Open, FileAccess.Read);
 			StreamReader reader = new StreamReader(file);
-			string res = reader.ReadToEnd().ToLower();  // Word and bigram counts are not case sensitive
+			string res = reader.ReadToEnd().ToLower();  // word and bigram counts are not case sensitive
 			reader.Close();
 			file.Close();
 

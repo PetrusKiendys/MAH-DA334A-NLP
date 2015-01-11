@@ -13,8 +13,8 @@ namespace NLP_Assignment1
 			LanguageModel lm = new LanguageModel(Verbosity.NORMAL);
 			lm.Run();
 
-			// keep the console window open/active at the end of runtime
-			Console.Read();
+			Console.WriteLine("Press Enter to close this window...");
+			Console.Read();		// keep the console window open/active at the end of runtime
 		}
 	}
 }

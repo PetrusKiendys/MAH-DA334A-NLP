@@ -8,31 +8,19 @@ namespace NLP_Assignment2
 {
 	class TreePathingUtility
 	{
-		// TODO_LOW: remove Run() method later (as this class is only used for reference)
-		public void Run()
-		{
-			string filepath = "../../res/data/talbanken-cfg_pos-train.cfg";
-			FileStream file = new FileStream(filepath, FileMode.Open, FileAccess.Read);
-			StreamReader reader = new StreamReader(file);
-			string output = reader.ReadToEnd();
-			reader.Close();
-			file.Close();
-			
-			string[] rows = output.Split('\n');
-			
-			for (int i = 0; i < rows.Length; i++)
+
+		/*	NOTE: example of how to run Start:
+		  
+		 	for (int i = 0; i < rows.Length; i++)
 			{
 				string row = rows[i];
 				Console.WriteLine(row);
 				Start(row);
-
-				break;
+				break;						// QUESTION: break-statement is needed?
 			}
-
-			Console.ReadLine();
-		}
-
-
+		  
+		 	where "rows" is a string[] consisting of bracketing formatted phrase structure trees
+		 */
 		public void Start(string input, string start=null)
 		{
 			// invoked when input is not surrounded by parenthesis

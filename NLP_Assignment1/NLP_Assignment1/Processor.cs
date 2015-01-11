@@ -51,7 +51,6 @@ namespace NLP_Assignment1
 					{
 						if ((i+1) % unknownhandler_modifier == 0 && i != 0)
 						{
-							//Console.WriteLine("i: " + i + ", unknownhandler_modifier: "+unknownhandler_modifier+", operation: "+(i%unknownhandler_modifier));
 							res.Add("#unk");
 						}
 						else
@@ -60,27 +59,15 @@ namespace NLP_Assignment1
 						}   
 					}
 
-					// TODO_HIGH: fix UnknownHandler.RANDOMIZE
 					else if (unknownhandler.Equals(UnknownHandler.RANDOMIZE))
 					{
 						rand = new Random(i);
 						int result = rand.Next(0,100);
 
-						//Console.WriteLine(result);
-
 						if (unknownhandler_modifier <= result)
-						{
-							//Console.WriteLine("word, "+result);
-							//Console.WriteLine("word");
-							res.Add(word_field);
-						}
-							
+							res.Add(word_field);						
 						else
-						{
-							//Console.WriteLine("unk, "+result);
-							//Console.WriteLine("unk");
 							res.Add("#unk");
-						}
 							
 					}
 					else if (unknownhandler.Equals(UnknownHandler.NONE))
@@ -96,22 +83,13 @@ namespace NLP_Assignment1
 		// TODO_LOW: rename parameters to something more specific if possible..
 		internal List<string> ExtractDiffWords(Dictionary<string, int> dictionary1, Dictionary<string, int> dictionary2)
 		{
-
 			List<String> res = new List<string>();
-			//List<String> antires = new List<string>();
 
 			foreach (KeyValuePair<string, int> entry in dictionary1)
 			{
 				string word = entry.Key;
 				if (!dictionary2.ContainsKey(word))
-				{
 					res.Add(word);
-				}
-				// TODO_LOW: assign a verbosity modifier to this code snippet
-				else
-				{
-					//antires.Add(word);
-				}
 			}
 
 			return res;
@@ -160,10 +138,8 @@ namespace NLP_Assignment1
 			}
 		}
 
-		// TODO_LOW:    fix this method so that it can return both Dictionary<string, float>
-		//              and Dictionary<string, BigRational> through the use of "out" and "ref"
-		// TODO_LOW:    fix support for Laplace add-one smoothing when using float type?
-		// DEV_NOTE:    smoothing in this function is not done "on-the-fly" and should only be used for debug reasons
+		// TODO_LOW:    fix support for Laplace add-one smoothing when using float type? (remove this feature or any support for float types)
+		// TODO_LOW / DEV_NOTE:    smoothing in this function is not done "on-the-fly" and should only be used for debug reasons (remove this feature)
 		// ASSIGNMENT:  we can see that when we apply smoothing, the probabilities become closer for the same entries
 		//                  f.e. the first bigram prob entries 1/1 and 1/7 are smoothed into 1/6457 and 1/6454
 		internal Dictionary<string, BigRational> CalcProb	(Dictionary<string, int> countBigrams, Dictionary<string, int> countUnigrams, Enum storage, Enum smoothing)
@@ -223,18 +199,6 @@ namespace NLP_Assignment1
 							}
 						}
 					}
-					
-
-					if (LanguageModel.verbosity == Verbosity.DEBUG || LanguageModel.verbosity == Verbosity.VERBOSE)
-					{
-						if (i == 0)
-						{
-							// TODO_LOW: assign prob properly
-							//if (LanguageModel.verbosity == Verbosity.VERBOSE)
-							//    Console.WriteLine("\"" + bigram + "\"" + " has a probability of " + prob);
-							//findLowProb(entry.Key, prob, 1/4000f);
-						}
-					}
 				}
 			}
 
@@ -249,23 +213,18 @@ namespace NLP_Assignment1
 			return null;
 		}
 
-		// TODO_LOW:    fix this so that you can send both Dictionary<string, float> and Dictionary<string, BigRational>, using "optional"
-		//              so that we're able to send either "probListBigrams2" or "probListBigrams"
 		internal decimal CalcPerplex(Dictionary<string, int> countUnigrams, Dictionary<string, BigRational> probListBigrams, Enum storage, Enum smoothing)
 		{
-			// --variables for counters and results of processing--
-			//      --results--
+			//      --results variables--
 			int n = 0;
-			// CLEANUP: sum_e is no longer in use, can be safely deleted?
-			double sum = 0, sum_e = 0;
-			decimal sum_e_hardcoded = 0;
+			double sum = 0;
 			double bigramprob = 1.0;
 
 			//      --counters & dev variables--
 			int counter = 0;
 			double d = 0, dLog = 0;
 			BigRational bigrat_smallest = new BigRational(1,1), bigrat_try_smaller;
-			decimal deci_smallest = 1.0m, deci_try_smaller;
+			decimal deci_try_smaller;
 			bool zero_reached_deci = false, zero_reached_bigrat = false;
 
 
@@ -275,16 +234,11 @@ namespace NLP_Assignment1
 				n += entry.Value;
 			}
 
-			// EXTRA_INFO: by calculating word tokens divided by word types we know that every word appears 5.8 times on average
+			// ASSIGNMENT_EXTRA: by calculating word tokens divided by word types we know that every word appears 5.8 times on average
 			if (LanguageModel.verbosity == Verbosity.DEBUG)
 				Console.WriteLine("value of n: " + n);
 
 			// --STEP: summation of bigram probabilities (in log space)
-			// NOTE: might want to use double datatype everywhere for probabilities (although this will require more memory/processing)
-			
-			// TODO_LOW: make a conditional that runs either:
-			//      foreach (KeyValuePair<string, float> entry in probListBigrams)		or
-			//      foreach (KeyValuePair<string, BigRational> entry in probListBigrams)
 			foreach (KeyValuePair<string, BigRational> entry in probListBigrams)
 			{
 				counter++;
@@ -364,34 +318,17 @@ namespace NLP_Assignment1
 				}
 			}
 
-			//if (LanguageModel.verbosity == Verbosity.DEBUG)
-			Console.WriteLine("sum printed as double: " + sum);
-			Console.WriteLine("total number of added terms (for-loop iterations): " + counter);
+			if (LanguageModel.verbosity == Verbosity.DEBUG)
+			{
+				Console.WriteLine("sum printed as double: " + sum);
+				Console.WriteLine("total number of added terms (for-loop iterations): " + counter);
+			}
+			
 
 
 
 
 			// --STEP: raising e to the power of sum (getting out of log space)--
-
-			//   Console.WriteLine("Raised sum " + sum_e);
-
-			//	NOTE: 18446744073709551615 is the max value that BigInteger can hold (this equals to (2^64)-1)
-			//BigRational r = new BigRational(new BigInteger(1), new BigInteger(18446744073709551615));
-			//BigRational s = new BigRational(new BigInteger(1), new BigInteger(100000000000000000));
-			//BigRational t = r+s;
-
-			//float flt = 0.5f;
-			//double dbl = 0.5;
-			//decimal deci = 0.5m;
-			//BigRational u = new BigRational(deci);
-
-			//decimal sum_deci = (decimal)sum;
-			//BigRational u = new BigRational(sum_deci);
-			
-			//double res_dbl = Math.Pow(Math.E, sum);
-			//decimal res_deci = (decimal)res_dbl;
-			//BigRational res_bigrat = new BigRational(res_deci);
-
 			BigRational bigrat = new BigRational((decimal)Math.Pow(Math.E, sum));
 			Console.WriteLine("BigRational: " + bigrat);
 
@@ -434,28 +371,12 @@ namespace NLP_Assignment1
 
 			decimal perplex_nomarkers_nosmoothing = 9.948541m;      // perplex for no bigram probabilities for start & end markers, no smoothing
 			decimal perplex_markers_nosmoothing;                    // perplex for bigram probabilities for start & end markers, no smoothing
+																	// TODO_LOW: assign values to this variable after calculation
 			decimal perplex_markers_smoothing;                      // perplex for bigram probabilities for start & end markers, add-one smoothing
-
+																	// TODO_LOW: assign values to this variable after calculation
 			Console.WriteLine("static calculation of perplexity: " + perplex_nomarkers_nosmoothing);
 
-
 			return perplex_nomarkers_nosmoothing;
-
-		}
-
-		// TODO_LOW: move this into the method from which it is referenced (no use to break it out into a separate method)
-		/// <summary>
-		/// Dev function to identify low bigram probabilities.
-		/// </summary>
-		/// <param name="bigram">The bigram whose probability is being checked.</param>
-		/// <param name="prob">The bigram probability.</param>
-		/// <param name="thresh">The threshold under which the probability must lie to trigger printing of the bigram.</param>
-		private void findLowProb(string bigram, float prob, float thresh)
-		{
-			if (thresh > prob)
-			{
-				Console.WriteLine("\"" + bigram + "\" has a low prob of: " + prob);
-			}
 		}
 
 	}

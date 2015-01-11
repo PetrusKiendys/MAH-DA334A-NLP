@@ -107,7 +107,6 @@ namespace NLP_Assignment2
 		 *	add each child to the node by calling this function (recursively)
 		 * }
 		 */
-		// TODO:	 implement support for extracting only tags as node or tags & words as nodes
 		// TODO_LOW: to improve clarity of this implementation two control flow branches could be constructed (one for non-terminals and another for terminals)
 		private TreeNode ExtractNode(string str, ExtractMode extractmode)
 		{

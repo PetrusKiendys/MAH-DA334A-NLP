@@ -1,0 +1,1 @@
+Assignments for "Introduction to Natural Language Processing" at Malmö University: http://edu.mah.se/en/Course/DA334A
